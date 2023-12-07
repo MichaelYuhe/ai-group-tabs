@@ -17,12 +17,12 @@ const Popup = () => {
     setOpenAIKey(e.target.value);
   }, []);
 
-  const updateKeyInLocalStorage = useCallback(() => {
+  const updateKeyInStorage = useCallback(() => {
     setStorage("openai_key", openAIKey);
   }, [openAIKey]);
 
   const getAllTabsInfo = async () => {
-    updateKeyInLocalStorage();
+    updateKeyInStorage();
     const tabs = await chrome.tabs.query({ currentWindow: true });
 
     const result = await batchGroupTabs(tabs, TYPES, openAIKey);
