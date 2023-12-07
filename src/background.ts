@@ -77,8 +77,6 @@ function handleTabUpdate(tabId: any, changeInfo: any, tab: any) {
         const groupId = tabMap.get(type);
 
         if (!groupId) {
-          console.log("No group id found for type:", type);
-
           chrome.tabs.group({ tabIds: [tab.id] }, async (groupId) => {
             await chrome.tabGroups.update(groupId, { title: type });
           });
