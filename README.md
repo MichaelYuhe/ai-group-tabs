@@ -15,6 +15,7 @@ Group your tabs with AI.
 - [ ] Logo and name
 - [ ] CI / CD for build and release new version
 - [ ] Add toast
+- [ ] Group the updated tab only when a tab is updated
 
 ## Development
 
