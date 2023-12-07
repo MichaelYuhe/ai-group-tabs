@@ -7,9 +7,9 @@ Group your tabs with AI.
 ## Roadmap
 
 - [x] Group tabs with AI by default categrories
-- [ ] Fill OpenAI API key in popup and save in Chrome storage
+- [x] Fill OpenAI API key in popup and save in Chrome storage
 - [ ] Customize categories
-- [ ] Group new tabs automatically
+- [x] Group new tabs automatically
 - [ ] Code refactoring: types, tests and some other optimizations
 - [ ] Publish on Chrome store
 - [ ] Better prompt engineering
