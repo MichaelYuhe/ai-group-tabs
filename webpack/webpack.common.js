@@ -29,6 +29,28 @@ module.exports = {
                 use: "ts-loader",
                 exclude: /node_modules/,
             },
+            {
+                test: /\.css$/,
+                use: [
+                  'style-loader',
+                  {
+                    loader: 'css-loader',
+                    options: { importLoaders: 1 },
+                  },
+                  {
+                    loader: 'postcss-loader',
+                    options: {
+                      postcssOptions: {
+                        ident: 'postcss',
+                        plugins: [
+                          require('tailwindcss'),
+                          require('autoprefixer'),
+                        ],
+                      },
+                    },
+                  },
+                ],
+              }
         ],
     },
     resolve: {
