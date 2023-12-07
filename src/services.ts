@@ -1,5 +1,3 @@
-import { TYPES } from "./background";
-
 interface TabGroup {
   type: string;
   tabIds: (number | undefined)[];
@@ -28,6 +26,7 @@ export async function batchGroupTabs(
   try {
     await Promise.all(
       tabInfoList.map(async (tab) => {
+        if (!tab.url) return;
         const response = await fetch(
           "https://api.openai.com/v1/chat/completions",
           {
@@ -49,7 +48,7 @@ export async function batchGroupTabs(
                   content: `The site url is ${tab.url}`,
                 },
               ],
-              model: "gpt-3.5-turbo",
+              model: "gpt-4",
             }),
           }
         );
@@ -69,7 +68,11 @@ export async function batchGroupTabs(
   }
 }
 
-export async function handleOneTab(tab: chrome.tabs.Tab, openAIKey: string) {
+export async function handleOneTab(
+  tab: chrome.tabs.Tab,
+  types: string[],
+  openAIKey: string
+) {
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -81,7 +84,7 @@ export async function handleOneTab(tab: chrome.tabs.Tab, openAIKey: string) {
         messages: [
           {
             role: "system",
-            content: `You are an assistant to help decide a type in ${TYPES.join(
+            content: `You are an assistant to help decide a type in ${types.join(
               ", "
             )} for a tab by search and analyze its url. Response the type only. Do not return anything else.`,
           },
@@ -90,7 +93,7 @@ export async function handleOneTab(tab: chrome.tabs.Tab, openAIKey: string) {
             content: `The site url is ${tab.url}`,
           },
         ],
-        model: "gpt-3.5-turbo",
+        model: "gpt-4",
       }),
     });
 

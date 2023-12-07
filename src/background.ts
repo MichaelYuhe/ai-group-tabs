@@ -1,14 +1,26 @@
 import { handleOneTab } from "./services";
 import { getStorage } from "./utils";
 
-export const TYPES = ["Develop", "Entertainment", "Reading", "Social"];
+let types: string[] = [];
+
+chrome.storage.local.get("types", (result) => {
+  if (result.types) {
+    types = result.types;
+  }
+});
 
 const tabMap = new Map<string, number>();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  chrome.storage.local.get("types", (result) => {
+    if (result.types) {
+      types = result.types;
+    }
+  });
+
   const result = message.result;
 
-  TYPES.forEach((_, i) => groupOneType(result[i].type, result[i].tabIds));
+  types.forEach((_, i) => groupOneType(result[i].type, result[i].tabIds));
 });
 
 chrome.tabGroups.onCreated.addListener((group) => {
@@ -25,19 +37,21 @@ chrome.tabGroups.onCreated.addListener((group) => {
 async function groupOneType(type: string, tabIds: number[]) {
   if (tabIds.length === 0) return;
 
-  console.log(tabIds);
-
   chrome.tabs.group({ tabIds }, async (groupId) => {
     await chrome.tabGroups.update(groupId, { title: type });
   });
 }
 
 async function handleNewTab(tab: chrome.tabs.Tab) {
+  if (!types.length) {
+    return;
+  }
+
   getStorage<string>("openai_key")
     .then(async (openAIKey) => {
-      if (!tab.id) return;
+      if (!tab.id || !tab.url || tab.url === "chrome://newtab/") return;
 
-      const type = await handleOneTab(tab, openAIKey);
+      const type = await handleOneTab(tab, types, openAIKey);
       const groupId = tabMap.get(type);
 
       if (!groupId) {
@@ -69,11 +83,12 @@ async function handleNewTab(tab: chrome.tabs.Tab) {
 
 function handleTabUpdate(tabId: any, changeInfo: any, tab: any) {
   if (changeInfo.status === "complete") {
+    if (!tab.url) return;
     getStorage<string>("openai_key")
       .then(async (openAIKey) => {
-        if (!tab.id) return;
+        if (!tab.id || !tab.url || tab.url === "chrome://newtab/") return;
 
-        const type = await handleOneTab(tab, openAIKey);
+        const type = await handleOneTab(tab, types, openAIKey);
         const groupId = tabMap.get(type);
 
         if (!groupId) {
