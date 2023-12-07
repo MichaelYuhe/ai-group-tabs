@@ -2,6 +2,8 @@
 
 Group your tabs with AI.
 
+[Demo Video](https://twitter.com/i/status/1732560960936935555)
+
 ## Roadmap
 
 - [x] Group tabs with AI by default categrories
