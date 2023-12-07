@@ -1,12 +1,21 @@
-import React from "react";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 export const TYPES = ["Develop", "Entertainment", "Reading", "Social"];
 
 const Popup = () => {
-  const OPENAI_API_KEY = "Your key";
+  const [openAIKey, setOpenAIKey] = useState<string>(localStorage.getItem('openai_key') || '');
+
+  const updateOpenAIKey = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setOpenAIKey(e.target.value);
+  }, []);
+
+  const updateKeyInLocalStorage = useCallback(() => {
+    localStorage.setItem('openai_key', openAIKey!);
+  }, [openAIKey]);
 
   const getAllTabsInfo = async () => {
+    updateKeyInLocalStorage();
     const tabs = await chrome.tabs.query({ currentWindow: true });
     const tabsInfo = tabs.map((tab) => {
       return {
@@ -31,7 +40,7 @@ const Popup = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${OPENAI_API_KEY}`,
+              Authorization: `Bearer ${openAIKey}`,
             },
             body: JSON.stringify({
               messages: [
@@ -65,6 +74,8 @@ const Popup = () => {
 
   return (
     <>
+      <label htmlFor="openai-key">Setup openAI key</label>
+      <input id="openai-key" type="password" onChange={updateOpenAIKey} value={openAIKey} placeholder="Your OpenAI Key" />
       <button onClick={getAllTabsInfo}>Gooooooooooooooo</button>
     </>
   );
