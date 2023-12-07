@@ -1,5 +1,7 @@
 # AI Group Tabs
 
+[![Build](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml)
+
 Group your tabs with AI.
 
 [Demo Video](https://twitter.com/i/status/1732560960936935555)
