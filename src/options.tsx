@@ -2,9 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 
 const Options = () => {
-  return (
-    <></>
-  );
+  return <></>;
 };
 
 const root = createRoot(document.getElementById("root")!);

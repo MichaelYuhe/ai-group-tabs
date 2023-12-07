@@ -1,70 +1,35 @@
-# Chrome Extension TypeScript Starter
+# AI Group Tabs
 
-![build](https://github.com/chibat/chrome-extension-typescript-starter/workflows/build/badge.svg)
+Group your tabs with AI.
 
-Chrome Extension, TypeScript and Visual Studio Code
+## Roadmap
 
-## Prerequisites
+- [x] Group tabs with AI by default categrories
+- [ ] Fill OpenAI API key in popup and save in Chrome storage
+- [ ] Customize categories
+- [ ] Group new tabs automatically
+- [ ] Code refactoring: types, tests and some other optimizations
+- [ ] Publish on Chrome store
+- [ ] Better prompt engineering
+- [ ] Logo and name
 
-* [node + npm](https://nodejs.org/) (Current Version)
+## Development
 
-## Option
-
-* [Visual Studio Code](https://code.visualstudio.com/)
-
-## Includes the following
-
-* TypeScript
-* Webpack
-* React
-* Jest
-* Example Code
-    * Chrome Storage
-    * Options Version 2
-    * content script
-    * count up badge number
-    * background
-
-## Project Structure
-
-* src/typescript: TypeScript source files
-* src/assets: static files
-* dist: Chrome Extension directory
-* dist/js: Generated JavaScript files
-
-## Setup
-
-```
-npm install
+```bash
+# Install dependencies
+yarn
 ```
 
-## Import as Visual Studio Code project
-
-...
-
-## Build
-
-```
-npm run build
+```bash
+# Development
+yarn watch
 ```
 
-## Build in watch mode
-
-### terminal
-
-```
-npm run watch
+```bash
+# Build
+yarn build
 ```
 
-### Visual Studio Code
+## Contribution
 
-Run watch mode.
-
-type `Ctrl + Shift + B`
-
-## Load extension to chrome
-
-Load `dist` directory
-
-## Test
-`npx jest` or `npm run test`
+Feel free to open issues and pull requests. Any suggestions are welcome.
