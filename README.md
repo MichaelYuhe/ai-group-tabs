@@ -20,6 +20,8 @@ Group your tabs with AI.
 yarn
 ```
 
+Add your OpenAI API key in `popup.tsx`
+
 ```bash
 # Development
 yarn watch
