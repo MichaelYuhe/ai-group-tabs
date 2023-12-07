@@ -23,13 +23,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   types.forEach((_, i) => groupOneType(result[i].type, result[i].tabIds));
 });
 
-chrome.tabGroups.onCreated.addListener((group) => {
+chrome.tabGroups.onUpdated.addListener((group) => {
   if (!group.title) return;
   const type = group.title;
 
-  if (tabMap.has(type)) {
-    return;
-  }
+  if (tabMap.has(type)) return;
 
   tabMap.set(type, group.id);
 });
@@ -53,6 +51,8 @@ async function handleNewTab(tab: chrome.tabs.Tab) {
 
       const type = await handleOneTab(tab, types, openAIKey);
       const groupId = tabMap.get(type);
+
+      console.log(type, groupId);
 
       if (!groupId) {
         console.log("No group id found for type:", type);
