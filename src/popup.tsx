@@ -60,9 +60,13 @@ const Popup = () => {
       <div className="flex flex-col gap-y-2 mb-2">
         <form
           onSubmit={(e) => {
+            let newTypes = [...types, newType];
             setNewType("");
-            setTypes([...types, newType]);
+            setTypes(newTypes);
             e.preventDefault();
+
+            chrome.storage.local.set({ types: newTypes });
+            chrome.runtime.sendMessage({ types: newTypes });
           }}
         >
           <div className="flex items-center gap-x-2">
@@ -97,23 +101,15 @@ const Popup = () => {
                 const newTypes = [...types];
                 newTypes.splice(idx, 1);
                 setTypes(newTypes);
+
+                chrome.storage.local.set({ types: newTypes });
+                chrome.runtime.sendMessage({ types: newTypes });
               }}
             >
               Delete
             </button>
           </div>
         ))}
-
-        <button
-          onClick={() => {
-            chrome.storage.local.set({ types });
-
-            chrome.runtime.sendMessage({ types });
-          }}
-          className="rounded-md w-fit bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Save Group Types
-        </button>
       </div>
 
       <button
