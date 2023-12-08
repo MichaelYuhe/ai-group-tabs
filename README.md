@@ -19,6 +19,12 @@ Group your tabs with AI.
 - [ ] Add toast
 - [x] Group the updated tab only when a tab is updated
 
+## Download and Start Using
+
+Download the latest released `dist.zip` from [the release page](https://github.com/MichaelYuhe/ai-group-tabs/releases), unzip after download, you will get a folder named `dist`. 
+
+Open Chrome, go to `chrome://extensions/`, turn on `Developer mode` on the top right corner, click `Load unpacked` on the top left corner, select the `dist` folder you just unzipped.
+
 ## Development
 
 ```bash
