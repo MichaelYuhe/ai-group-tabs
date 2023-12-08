@@ -41,6 +41,8 @@ async function groupOneType(type: string, tabIds: number[]) {
 }
 
 async function handleNewTab(tab: chrome.tabs.Tab) {
+  const enable = await getStorage<boolean>("isOn");
+  if(!enable) return;
   if (!types.length) {
     return;
   }
@@ -81,7 +83,9 @@ async function handleNewTab(tab: chrome.tabs.Tab) {
     });
 }
 
-function handleTabUpdate(tabId: any, changeInfo: any, tab: any) {
+async function handleTabUpdate(tabId: any, changeInfo: any, tab: any) {
+  const enable = await getStorage<boolean>("isOn");
+  if(!enable) return;
   if (changeInfo.status === "complete") {
     if (!tab.url) return;
     getStorage<string>("openai_key")
