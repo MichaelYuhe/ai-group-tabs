@@ -2,9 +2,11 @@
 
 [![Build](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml)
 
-Group your tabs with AI.
+A Chrome extension helps you group your tabs with AI.
 
 [Demo Video](https://twitter.com/i/status/1732560960936935555)
+
+> The extension is still under development, feel free to open issues and pull requests. Any suggestions are welcome.
 
 ## Roadmap
 
@@ -44,6 +46,3 @@ yarn watch
 yarn build
 ```
 
-## Contribution
-
-Feel free to open issues and pull requests. Any suggestions are welcome.
