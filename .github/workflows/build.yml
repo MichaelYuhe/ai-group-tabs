@@ -16,19 +16,22 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
 
-      - name: Install dependencies
-        run: yarn
+      - name: Set node
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+
+      - name: Setup
+        run: npm i -g @antfu/ni
+
+      - name: Install
+        run: nci
 
       - name: Lint
-        run: yarn style
+        run: nr style
 
       - name: Build
-        run: yarn build
-
-      # - name: Test
-      #   run: yarn test
+        run: nr build
