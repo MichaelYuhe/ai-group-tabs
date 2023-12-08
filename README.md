@@ -19,15 +19,16 @@ A Chrome extension helps you group your tabs with AI.
 - [ ] Logo and name
 - [ ] CI / CD for build and release new version
 - [ ] Add toast
+- [x] Use Vite and pnpm
 - [x] Group the updated tab only when a tab is updated
 
 ## Download and Start Using
 
-Download the latest released `dist.zip` from [the release page](https://github.com/MichaelYuhe/ai-group-tabs/releases), unzip after download, you will get a folder named `dist`. 
+Download the latest released `dist.zip` from [the release page](https://github.com/MichaelYuhe/ai-group-tabs/releases), unzip after download, you will get a folder named `dist`.
 
 Open Chrome, go to `chrome://extensions/`, turn on `Developer mode` on the top right corner, click `Load unpacked` on the top left corner, select the `dist` folder you just unzipped.
 
-- Fill in the OpenAI API key, add some types and click on the "Save" button. 
+- Fill in the OpenAI API key, add some types and click on the "Save" button.
 - Click on the "Group Tabs" button, your current tabs will be grouped.
 - Your new tab will be grouped automatically.
 
@@ -35,18 +36,11 @@ Open Chrome, go to `chrome://extensions/`, turn on `Developer mode` on the top r
 
 ```bash
 # Install dependencies
-yarn
-```
+pnpm install
 
-Add your OpenAI API key in `popup.tsx`
-
-```bash
 # Development
-yarn watch
-```
+pnpm dev
 
-```bash
 # Build
-yarn build
+pnpm build
 ```
-
