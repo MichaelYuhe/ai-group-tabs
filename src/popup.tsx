@@ -28,7 +28,6 @@ const Popup = () => {
   }, [openAIKey]);
 
   const getAllTabsInfo = async () => {
-    console.log(openAIKey, types);
     if (!openAIKey || !types || !types.length) {
       return;
     }
@@ -70,7 +69,7 @@ const Popup = () => {
       <div className="flex flex-col gap-y-2 mb-2">
         <form
           onSubmit={(e) => {
-            let newTypes = [...types, newType];
+            const newTypes = [...types, newType];
             setNewType("");
             setTypes(newTypes);
             e.preventDefault();
@@ -93,6 +92,7 @@ const Popup = () => {
             </button>
           </div>
         </form>
+
         {types?.map((type, idx) => (
           <div className="flex items-center gap-x-2" key={idx}>
             <input
@@ -127,7 +127,7 @@ const Popup = () => {
         className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         onClick={getAllTabsInfo}
       >
-        Group Tabs
+        Group Existing Tabs
       </button>
 
       <div className="flex items-center mt-2">
