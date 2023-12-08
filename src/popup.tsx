@@ -60,7 +60,7 @@ const Popup = () => {
       <div className="flex flex-col gap-y-2 mb-2">
         <form
           onSubmit={(e) => {
-            setNewType('');
+            setNewType("");
             setTypes([...types, newType]);
             e.preventDefault();
           }}
@@ -74,9 +74,7 @@ const Popup = () => {
                 setNewType(e.target.value);
               }}
             />
-            <button
-              className="rounded-md w-fit bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
+            <button className="rounded-md w-fit bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
               Add New Group Type
             </button>
           </div>
