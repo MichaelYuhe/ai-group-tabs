@@ -33,8 +33,5 @@ jobs:
       - name: Lint
         run: nr style
 
-      - name: Lint
-        run: yarn style
-
       - name: Build
         run: nr build
