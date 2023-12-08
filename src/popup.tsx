@@ -41,8 +41,10 @@ const Popup = () => {
   };
 
   const disableGrouping = () => {
-    setIsOn(!isOn);
-    setStorage("isOn", !isOn);
+    setIsOn((isOn) => {
+      setStorage("isOn", !isOn);
+      return !isOn;
+    });
   };
 
   return (

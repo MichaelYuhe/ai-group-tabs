@@ -41,8 +41,8 @@ async function groupOneType(type: string, tabIds: number[]) {
 }
 
 async function handleNewTab(tab: chrome.tabs.Tab) {
-  const enable = await getStorage<boolean>("isOn");
-  if (!enable) return;
+  const isOn = await getStorage<boolean>("isOn");
+  if (!isOn) return;
   if (!types.length) {
     return;
   }
