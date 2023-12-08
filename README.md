@@ -27,6 +27,10 @@ Download the latest released `dist.zip` from [the release page](https://github.c
 
 Open Chrome, go to `chrome://extensions/`, turn on `Developer mode` on the top right corner, click `Load unpacked` on the top left corner, select the `dist` folder you just unzipped.
 
+- Fill in the OpenAI API key, add some types and click on the "Save" button. 
+- Click on the "Group Tabs" button, your current tabs will be grouped.
+- Your new tab will be grouped automatically.
+
 ## Development
 
 ```bash

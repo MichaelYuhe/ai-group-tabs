@@ -8,6 +8,7 @@ const Popup = () => {
   const [openAIKey, setOpenAIKey] = useState<string>("");
   const [types, setTypes] = useState<string[]>([]);
   const [isOn, setIsOn] = useState<boolean>(true);
+  const [newType, setNewType] = useState<string>("");
 
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
@@ -36,7 +37,6 @@ const Popup = () => {
     const tabs = await chrome.tabs.query({ currentWindow: true });
 
     const result = await batchGroupTabs(tabs, types, openAIKey);
-
     chrome.runtime.sendMessage({ result });
   };
 
@@ -68,6 +68,31 @@ const Popup = () => {
       </div>
 
       <div className="flex flex-col gap-y-2 mb-2">
+        <form
+          onSubmit={(e) => {
+            let newTypes = [...types, newType];
+            setNewType("");
+            setTypes(newTypes);
+            e.preventDefault();
+
+            chrome.storage.local.set({ types: newTypes });
+            chrome.runtime.sendMessage({ types: newTypes });
+          }}
+        >
+          <div className="flex items-center gap-x-2">
+            <input
+              type="text"
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              value={newType}
+              onChange={(e) => {
+                setNewType(e.target.value);
+              }}
+            />
+            <button className="rounded-md w-fit bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              Add
+            </button>
+          </div>
+        </form>
         {types?.map((type, idx) => (
           <div className="flex items-center gap-x-2" key={idx}>
             <input
@@ -86,32 +111,15 @@ const Popup = () => {
                 const newTypes = [...types];
                 newTypes.splice(idx, 1);
                 setTypes(newTypes);
+
+                chrome.storage.local.set({ types: newTypes });
+                chrome.runtime.sendMessage({ types: newTypes });
               }}
             >
               Delete
             </button>
           </div>
         ))}
-
-        <button
-          onClick={() => {
-            setTypes([...types, ""]);
-          }}
-          className="rounded-md w-fit bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Add New Group Type
-        </button>
-
-        <button
-          onClick={() => {
-            chrome.storage.local.set({ types });
-
-            chrome.runtime.sendMessage({ types });
-          }}
-          className="rounded-md w-fit bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Save Group Types
-        </button>
       </div>
 
       <button
