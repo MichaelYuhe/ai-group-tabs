@@ -8,6 +8,7 @@ const Popup = () => {
   const [openAIKey, setOpenAIKey] = useState<string>("");
   const [types, setTypes] = useState<string[]>([]);
   const [newType, setNewType] = useState<string>("");
+
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
     chrome.storage.local.get("types", (result) => {
@@ -26,7 +27,6 @@ const Popup = () => {
   }, [openAIKey]);
 
   const getAllTabsInfo = async () => {
-    console.log(openAIKey, types);
     if (!openAIKey || !types || !types.length) {
       return;
     }
@@ -37,6 +37,7 @@ const Popup = () => {
     const result = await batchGroupTabs(tabs, types, openAIKey);
     chrome.runtime.sendMessage({ result });
   };
+
   return (
     <div className="p-6 min-w-[24rem]">
       <div className="relative mb-2">
@@ -60,7 +61,7 @@ const Popup = () => {
       <div className="flex flex-col gap-y-2 mb-2">
         <form
           onSubmit={(e) => {
-            let newTypes = [...types, newType];
+            const newTypes = [...types, newType];
             setNewType("");
             setTypes(newTypes);
             e.preventDefault();
@@ -83,6 +84,7 @@ const Popup = () => {
             </button>
           </div>
         </form>
+
         {types?.map((type, idx) => (
           <div className="flex items-center gap-x-2" key={idx}>
             <input
@@ -117,7 +119,7 @@ const Popup = () => {
         className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         onClick={getAllTabsInfo}
       >
-        Group Tabs
+        Group Existing Tabs
       </button>
     </div>
   );
