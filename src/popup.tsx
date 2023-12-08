@@ -12,6 +12,7 @@ const Popup = () => {
 
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
+    getStorage<boolean>("isOn").then(setIsOn);
     chrome.storage.local.get("types", (result) => {
       if (result?.types) {
         setTypes(result.types);
