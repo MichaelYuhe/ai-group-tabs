@@ -7,7 +7,7 @@ import "./popup.css";
 const Popup = () => {
   const [openAIKey, setOpenAIKey] = useState<string>("");
   const [types, setTypes] = useState<string[]>([]);
-
+  const [newType, setNewType] = useState<string>("");
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
     chrome.storage.local.get("types", (result) => {
@@ -35,10 +35,8 @@ const Popup = () => {
     const tabs = await chrome.tabs.query({ currentWindow: true });
 
     const result = await batchGroupTabs(tabs, types, openAIKey);
-
     chrome.runtime.sendMessage({ result });
   };
-
   return (
     <div className="p-6 min-w-[24rem]">
       <div className="relative mb-2">
@@ -60,6 +58,29 @@ const Popup = () => {
       </div>
 
       <div className="flex flex-col gap-y-2 mb-2">
+        <form
+          onSubmit={(e) => {
+            setNewType('');
+            setTypes([...types, newType]);
+            e.preventDefault();
+          }}
+        >
+          <div className="flex items-center gap-x-2">
+            <input
+              type="text"
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              value={newType}
+              onChange={(e) => {
+                setNewType(e.target.value);
+              }}
+            />
+            <button
+              className="rounded-md w-fit bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Add New Group Type
+            </button>
+          </div>
+        </form>
         {types?.map((type, idx) => (
           <div className="flex items-center gap-x-2" key={idx}>
             <input
@@ -84,15 +105,6 @@ const Popup = () => {
             </button>
           </div>
         ))}
-
-        <button
-          onClick={() => {
-            setTypes([...types, ""]);
-          }}
-          className="rounded-md w-fit bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Add New Group Type
-        </button>
 
         <button
           onClick={() => {
