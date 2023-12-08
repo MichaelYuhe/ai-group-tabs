@@ -4,11 +4,11 @@
 
 A Chrome extension helps you group your tabs with AI.
 
-[Demo Video](https://twitter.com/i/status/1732560960936935555)
-
 > The extension is still under development, feel free to open issues and pull requests. Any suggestions are welcome.
 > 
 > [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/+99v98-XOQY0zZGNl)
+>
+> [Demo Video](https://twitter.com/i/status/1732560960936935555)
 
 ## Roadmap
 
