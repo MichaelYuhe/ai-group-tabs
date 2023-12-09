@@ -18,7 +18,7 @@ Demo Video:
 - [x] Customize categories in popup
 - [x] Group new tabs automatically
 - [ ] Publish on Chrome store
-- [ ] Better prompt engineering
+- [x] Better prompt engineering
 - [x] Logo and name
 - [ ] CI / CD for build and release new version
 - [ ] Add toast
