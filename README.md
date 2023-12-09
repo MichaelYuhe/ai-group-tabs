@@ -5,7 +5,7 @@
 A Chrome extension helps you group your tabs with AI.
 
 > The extension is still under development, feel free to open issues and pull requests. Any suggestions are welcome.
-> 
+>
 > [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/+99v98-XOQY0zZGNl)
 >
 > [Demo Video](https://twitter.com/i/status/1732560960936935555)
@@ -23,6 +23,7 @@ A Chrome extension helps you group your tabs with AI.
 - [ ] Add toast
 - [x] Use Vite and pnpm
 - [x] Group the updated tab only when a tab is updated
+- [x] Custom model and API server
 
 ## Download and Start Using
 
@@ -33,6 +34,8 @@ Open Chrome, go to `chrome://extensions/`, turn on `Developer mode` on the top r
 - Fill in the OpenAI API key, add some types and click on the "Save" button.
 - Click on the "Group Tabs" button, your current tabs will be grouped.
 - Your new tab will be grouped automatically.
+
+> You can change the model and API server in the options page.
 
 ## Development
 
