@@ -4,7 +4,8 @@
   "description": "Group your tabs with AI",
   "version": "1.0",
   "options_ui": {
-    "page": "options.html"
+    "page": "options.html",
+    "open_in_tab": true
   },
   "action": {
     "default_icon": "icon.png",
