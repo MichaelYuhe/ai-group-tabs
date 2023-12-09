@@ -42,9 +42,9 @@ export async function batchGroupTabs(
             messages: [
               {
                 role: "system",
-                content: `You are an assistant to help decide a type in ${types.join(
+                content: `Please analyze the given URL and classify the browser tab type as one of the following: "${types.join(
                   ", "
-                )} for a tab by search and analyze its url. Response the type only. Do not return anything else.`,
+                )}". Respond with the type classification only without any comments.`,
               },
               {
                 role: "user",
@@ -89,13 +89,13 @@ export async function handleOneTab(
         messages: [
           {
             role: "system",
-            content: `You are an assistant to help decide a type in ${types.join(
+            content: `Please analyze the given URL and classify the browser tab type as one of the following: "${types.join(
               ", "
-            )} for a tab by search and analyze its url. Response the type only. Do not return anything else.`,
+            )}". Respond with the type classification only without any comments.`,
           },
           {
             role: "user",
-            content: `The site url is ${tab.url}`,
+            content: `The tab url is ${tab.url}`,
           },
         ],
         model,
