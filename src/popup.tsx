@@ -33,7 +33,6 @@ const Popup = () => {
       return;
     }
 
-    updateKeyInStorage();
     const tabs = await chrome.tabs.query({ currentWindow: true });
 
     const result = await batchGroupTabs(tabs, types, openAIKey);
@@ -61,6 +60,7 @@ const Popup = () => {
           id="openai-key"
           type="password"
           onChange={updateOpenAIKey}
+          onBlur={updateKeyInStorage}
           value={openAIKey}
           placeholder="Your OpenAI Key"
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
