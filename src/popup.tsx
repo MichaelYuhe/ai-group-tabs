@@ -1,7 +1,9 @@
 import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { LoadingSpinner } from "./components/LoadingSpinner";
 import { batchGroupTabs } from "./services";
 import { DEFAULT_GROUP, getStorage, setStorage } from "./utils";
+
 import "./popup.css";
 
 const Popup = () => {
@@ -9,6 +11,7 @@ const Popup = () => {
   const [types, setTypes] = useState<string[]>([]);
   const [isOn, setIsOn] = useState<boolean | undefined>(true);
   const [newType, setNewType] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
@@ -34,11 +37,17 @@ const Popup = () => {
     if (!openAIKey || !types || !types.length) {
       return;
     }
-
-    const tabs = await chrome.tabs.query({ currentWindow: true });
-
-    const result = await batchGroupTabs(tabs, types, openAIKey);
-    chrome.runtime.sendMessage({ result });
+    try {
+      setIsLoading(true);
+      const tabs = await chrome.tabs.query({ currentWindow: true });
+      const result = await batchGroupTabs(tabs, types, openAIKey);
+      chrome.runtime.sendMessage({ result });
+    } catch (error) {
+      // TODO show error message
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const disableGrouping = () => {
@@ -142,9 +151,10 @@ const Popup = () => {
 
       <button
         disabled={!openAIKey || !types || !types.length}
-        className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        className="inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         onClick={getAllTabsInfo}
       >
+        {isLoading ? <LoadingSpinner /> : null}
         Group Existing Tabs
       </button>
 
