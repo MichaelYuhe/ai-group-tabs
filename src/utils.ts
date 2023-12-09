@@ -21,3 +21,12 @@ export function getStorage<V = any>(key: string): Promise<V | undefined> {
     });
   });
 }
+
+export const DEFAULT_GROUP = [
+  "Social",
+  "Entertainment",
+  "Read Material",
+  "Education",
+  "Productivity",
+  "Utilities",
+];
