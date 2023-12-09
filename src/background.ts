@@ -12,15 +12,22 @@ chrome.storage.local.get("types", (result) => {
 const tabMap = new Map<string, number>();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  chrome.storage.local.get("types", (result) => {
-    if (result.types) {
-      types = result.types;
+  chrome.storage.local.get("types", (resultStorage) => {
+    if (resultStorage.types) {
+      types = resultStorage.types;
+
+      const result = message.result;
+      types.forEach((_, i) => {
+        // Check if result[i] exists before accessing the 'type' property
+        if (result[i]) {
+          groupOneType(result[i].type, result[i].tabIds);
+        } else {
+          // Handle the case where there is no corresponding entry in result for this type
+          console.error(`No corresponding result for type index ${i}`);
+        }
+      });
     }
   });
-
-  const result = message.result;
-
-  types.forEach((_, i) => groupOneType(result[i].type, result[i].tabIds));
 });
 
 chrome.tabGroups.onUpdated.addListener((group) => {
