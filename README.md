@@ -12,7 +12,7 @@ A Chrome extension helps you group your tabs with AI.
 
 ## Roadmap
 
-- [x] Group tabs with AI by default categrories
+- [x] Group tabs with AI by default categories
 - [x] Fill OpenAI API key in popup and save in Chrome storage
 - [x] Customize categories in popup
 - [x] Group new tabs automatically
