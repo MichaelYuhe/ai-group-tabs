@@ -42,13 +42,15 @@ export async function batchGroupTabs(
             messages: [
               {
                 role: "system",
-                content: `Please analyze the given URL and classify the browser tab type as one of the following: "${types.join(
-                  ", "
-                )}". Respond with the type classification only without any comments.`,
+                content: "You are a classificator",
               },
               {
                 role: "user",
-                content: `The site url is ${tab.url}`,
+                content: `Based on the URL ${
+                  tab.url
+                }, classify the browser tab type as one of the following: ${types.join(
+                  ", "
+                )}. Respond with only the classification keyword from the list.`,
               },
             ],
             model,
@@ -89,13 +91,15 @@ export async function handleOneTab(
         messages: [
           {
             role: "system",
-            content: `Please analyze the given URL and classify the browser tab type as one of the following: "${types.join(
-              ", "
-            )}". Respond with the type classification only without any comments.`,
+            content: "You are a classificator",
           },
           {
             role: "user",
-            content: `The tab url is ${tab.url}`,
+            content: `Based on the URL ${
+              tab.url
+            }, classify the browser tab type as one of the following: ${types.join(
+              ", "
+            )}. Respond with only the classification keyword from the list.`,
           },
         ],
         model,
