@@ -11,7 +11,6 @@ const Options = () => {
   }, []);
 
   const updateModel = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
     setModel(e.target.value);
     setStorage("model", e.target.value);
   }, []);

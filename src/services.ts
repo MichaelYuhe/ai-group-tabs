@@ -1,3 +1,5 @@
+import { getStorage } from "./utils";
+
 interface TabGroup {
   type: string;
   tabIds: (number | undefined)[];
@@ -22,6 +24,8 @@ export async function batchGroupTabs(
       tabIds: [],
     };
   });
+
+  const model = await getStorage("model");
 
   try {
     await Promise.all(
@@ -48,7 +52,7 @@ export async function batchGroupTabs(
                   content: `The site url is ${tab.url}`,
                 },
               ],
-              model: "gpt-4",
+              model,
             }),
           }
         );
@@ -74,6 +78,8 @@ export async function handleOneTab(
   openAIKey: string
 ) {
   try {
+    const model = await getStorage("model");
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -93,7 +99,7 @@ export async function handleOneTab(
             content: `The site url is ${tab.url}`,
           },
         ],
-        model: "gpt-4",
+        model,
       }),
     });
 
@@ -102,6 +108,6 @@ export async function handleOneTab(
 
     return type;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }

@@ -54,11 +54,7 @@ async function handleNewTab(tab: chrome.tabs.Tab) {
       const type = await handleOneTab(tab, types, openAIKey);
       const groupId = tabMap.get(type);
 
-      console.log(type, groupId);
-
       if (!groupId) {
-        console.log("No group id found for type:", type);
-
         chrome.tabs.group({ tabIds: [tab.id] }, async (groupId) => {
           await chrome.tabGroups.update(groupId, { title: type });
         });
