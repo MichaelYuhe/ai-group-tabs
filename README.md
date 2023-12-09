@@ -49,3 +49,9 @@ pnpm dev
 # Build
 pnpm build
 ```
+
+## Sponsor
+
+> Everyone contributor can get your one month free of Developer Plan on Zeabur.
+
+[![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com?referralCode=MichaelYuhe&utm_source=ai-group-tab&utm_campaign=oss)
