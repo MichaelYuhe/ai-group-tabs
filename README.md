@@ -18,7 +18,7 @@ A Chrome extension helps you group your tabs with AI.
 - [x] Group new tabs automatically
 - [ ] Publish on Chrome store
 - [ ] Better prompt engineering
-- [ ] Logo and name
+- [x] Logo and name
 - [ ] CI / CD for build and release new version
 - [ ] Add toast
 - [x] Use Vite and pnpm
