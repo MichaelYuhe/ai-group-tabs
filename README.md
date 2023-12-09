@@ -8,7 +8,8 @@ A Chrome extension helps you group your tabs with AI.
 >
 > [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/+99v98-XOQY0zZGNl)
 
-[![Watch the video](https://img.youtube.com/vi/SjfKiXy3zOc/default.jpg)](https://youtu.be/SjfKiXy3zOc)
+Demo Video: 
+> [![Watch the video](https://img.youtube.com/vi/SjfKiXy3zOc/default.jpg)](https://youtu.be/SjfKiXy3zOc)
 
 ## Roadmap
 
