@@ -40,45 +40,6 @@ async function groupOneType(type: string, tabIds: number[]) {
   });
 }
 
-async function handleNewTab(tab: chrome.tabs.Tab) {
-  const isOn = await getStorage<boolean>("isOn");
-  if (!isOn) return;
-  if (!types.length) {
-    return;
-  }
-
-  getStorage<string>("openai_key")
-    .then(async (openAIKey) => {
-      if (!tab.id || !tab.url || tab.url === "chrome://newtab/") return;
-
-      const type = await handleOneTab(tab, types, openAIKey);
-      const groupId = tabMap.get(type);
-
-      if (!groupId) {
-        chrome.tabs.group({ tabIds: [tab.id] }, async (groupId) => {
-          await chrome.tabGroups.update(groupId, { title: type });
-        });
-
-        return;
-      }
-
-      const groupTabIds = await chrome.tabs
-        .query({
-          groupId: groupId,
-        })
-        .then((tabs) => tabs.map((tab) => tab.id));
-
-      const tabIds = [tab.id, ...(groupTabIds as number[])];
-
-      chrome.tabs.group({ tabIds: tabIds }, async (groupId) => {
-        await chrome.tabGroups.update(groupId, { title: type });
-      });
-    })
-    .catch((error) => {
-      console.error("Error in handleNewTab:", error);
-    });
-}
-
 async function createGroupWithTitle(tabId: number, title: string) {
   try {
     const groupId = await chrome.tabs.group({ tabIds: [tabId] });
@@ -86,6 +47,37 @@ async function createGroupWithTitle(tabId: number, title: string) {
     tabMap.set(title, groupId);
   } catch (error) {
     console.error("Error creating tab group:", error);
+  }
+}
+
+async function handleNewTab(tab: chrome.tabs.Tab) {
+  try {
+    const isOn = await getStorage<boolean>("isOn");
+    if (
+      !isOn ||
+      !tab.id ||
+      !tab.url ||
+      tab.url === "chrome://newtab/" ||
+      !types.length
+    ) {
+      return;
+    }
+
+    const openAIKey = await getStorage<string>("openai_key");
+    if (!openAIKey) return;
+
+    const type = await handleOneTab(tab, types, openAIKey);
+    const groupId = tabMap.get(type);
+
+    if (typeof groupId === "undefined") {
+      // Create a new group and add it to the map if it does not exist
+      await createGroupWithTitle(tab.id, type);
+    } else {
+      // When groupId exists, just add the tab to the group
+      await chrome.tabs.group({ tabIds: tab.id, groupId });
+    }
+  } catch (error) {
+    console.error("Error in handleNewTab:", error);
   }
 }
 
