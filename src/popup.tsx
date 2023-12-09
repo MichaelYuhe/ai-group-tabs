@@ -86,13 +86,15 @@ const Popup = () => {
       <div className="flex flex-col gap-y-2 mb-2">
         <form
           onSubmit={(e) => {
+            if (!newType) {
+              return;
+            }
             const newTypes = [...types, newType];
             setNewType("");
             setTypes(newTypes);
             e.preventDefault();
 
             setStorage<string[]>("types", newTypes);
-            chrome.runtime.sendMessage({ types: newTypes });
           }}
         >
           <div className="flex items-center gap-x-2">
@@ -129,9 +131,7 @@ const Popup = () => {
                 const newTypes = [...types];
                 newTypes.splice(idx, 1);
                 setTypes(newTypes);
-
-                chrome.storage.local.set({ types: newTypes });
-                chrome.runtime.sendMessage({ types: newTypes });
+                setStorage<string[]>("types", newTypes);
               }}
             >
               Delete
