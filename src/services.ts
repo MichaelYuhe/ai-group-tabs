@@ -25,37 +25,35 @@ export async function batchGroupTabs(
     };
   });
 
-  const model = await getStorage("model");
+  const model = (await getStorage("model")) || "gpt-4";
+  const apiURL = (await getStorage("apiURL")) || "https://api.openai.com";
 
   try {
     await Promise.all(
       tabInfoList.map(async (tab) => {
         if (!tab.url) return;
-        const response = await fetch(
-          "https://api.openai.com/v1/chat/completions",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${openAIKey}`,
-            },
-            body: JSON.stringify({
-              messages: [
-                {
-                  role: "system",
-                  content: `You are an assistant to help decide a type in ${types.join(
-                    ", "
-                  )} for a tab by search and analyze its url. Response the type only. Do not return anything else.`,
-                },
-                {
-                  role: "user",
-                  content: `The site url is ${tab.url}`,
-                },
-              ],
-              model,
-            }),
-          }
-        );
+        const response = await fetch(`${apiURL}/v1/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${openAIKey}`,
+          },
+          body: JSON.stringify({
+            messages: [
+              {
+                role: "system",
+                content: `You are an assistant to help decide a type in ${types.join(
+                  ", "
+                )} for a tab by search and analyze its url. Response the type only. Do not return anything else.`,
+              },
+              {
+                role: "user",
+                content: `The site url is ${tab.url}`,
+              },
+            ],
+            model,
+          }),
+        });
 
         const data = await response.json();
         const type = data.choices[0].message.content;
@@ -78,9 +76,10 @@ export async function handleOneTab(
   openAIKey: string
 ) {
   try {
-    const model = await getStorage("model");
+    const model = (await getStorage("model")) || "gpt-4";
+    const apiURL = (await getStorage("apiURL")) || "https://api.openai.com";
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch(`${apiURL}/v1/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
