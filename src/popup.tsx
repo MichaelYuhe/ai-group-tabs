@@ -5,18 +5,19 @@ import { getStorage, setStorage } from "./utils";
 import "./popup.css";
 
 const Popup = () => {
-  const [openAIKey, setOpenAIKey] = useState<string>("");
+  const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
   const [types, setTypes] = useState<string[]>([]);
-  const [isOn, setIsOn] = useState<boolean>(true);
+  const [isOn, setIsOn] = useState<boolean | undefined>(true);
   const [newType, setNewType] = useState<string>("");
 
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
     getStorage<boolean>("isOn").then(setIsOn);
-    chrome.storage.local.get("types", (result) => {
-      if (result?.types) {
-        setTypes(result.types);
+    getStorage<string[]>("types").then((types) => {
+      if (!types) {
+        return;
       }
+      setTypes(types);
     });
   }, []);
 
@@ -67,7 +68,7 @@ const Popup = () => {
         />
       </div>
 
-      {!openAIKey.length && (
+      {!openAIKey?.length && (
         <div className="text-sm text-gray-500 mb-2">
           You can get your key from{" "}
           <a
@@ -89,7 +90,7 @@ const Popup = () => {
             setTypes(newTypes);
             e.preventDefault();
 
-            chrome.storage.local.set({ types: newTypes });
+            setStorage<string[]>("types", newTypes);
             chrome.runtime.sendMessage({ types: newTypes });
           }}
         >
