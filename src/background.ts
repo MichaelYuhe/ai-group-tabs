@@ -67,21 +67,19 @@ async function processTabAndGroup(tab: chrome.tabs.Tab, types: any) {
 
   const type = await handleOneTab(tab, types, openAIKey);
 
+  // Query all groups and update tabMap accordingly
+  const allGroups = await chrome.tabGroups.query({});
+  allGroups.forEach(
+    (group) => group.title && tabMap.set(group.title, group.id)
+  );
+
   // Check if a group already exists for this type
   let groupId = tabMap.get(type);
 
+  // If groupId is not undefined, it means a group with that type already exists
   if (groupId !== undefined) {
-    // Verify if the existing group ID is still valid
-    const allGroups = await chrome.tabGroups.query({});
-    const groupExists = allGroups.some((group) => group.id === groupId);
-
-    if (groupExists) {
-      // Existing group is valid, add tab to this group.
-      await chrome.tabs.group({ tabIds: tab.id, groupId });
-    } else {
-      // If the group does not exist anymore, remove it from the map.
-      tabMap.delete(type);
-    }
+    // Existing group is valid, add tab to this group.
+    await chrome.tabs.group({ tabIds: tab.id, groupId });
   } else {
     // If no valid group is found, create a new group for this type
     await createGroupWithTitle(tab.id, type);
