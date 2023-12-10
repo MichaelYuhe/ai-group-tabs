@@ -26,17 +26,20 @@ export async function batchGroupTabs(
   });
 
   const model = (await getStorage("model")) || "gpt-4";
-  const apiURL = (await getStorage("apiURL")) || "https://api.openai.com";
+  const apiURL =
+    (await getStorage("apiURL")) ||
+    "https://api.openai.com/v1/chat/completions";
 
   try {
     await Promise.all(
       tabInfoList.map(async (tab) => {
         if (!tab.url) return;
-        const response = await fetch(`${apiURL}/v1/chat/completions`, {
+        const response = await fetch(apiURL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${openAIKey}`,
+            "Api-Key": openAIKey,
           },
           body: JSON.stringify({
             messages: [
@@ -79,13 +82,16 @@ export async function handleOneTab(
 ) {
   try {
     const model = (await getStorage("model")) || "gpt-4";
-    const apiURL = (await getStorage("apiURL")) || "https://api.openai.com";
+    const apiURL =
+      (await getStorage("apiURL")) ||
+      "https://api.openai.com/v1/chat/completions";
 
-    const response = await fetch(`${apiURL}/v1/chat/completions`, {
+    const response = await fetch(apiURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${openAIKey}`,
+        "Api-Key": openAIKey,
       },
       body: JSON.stringify({
         messages: [
