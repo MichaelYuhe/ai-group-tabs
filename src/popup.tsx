@@ -5,6 +5,7 @@ import { batchGroupTabs } from "./services";
 import { DEFAULT_GROUP, getStorage, setStorage } from "./utils";
 
 import "./popup.css";
+import Input from "./components/Input";
 
 const Popup = () => {
   const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
@@ -67,14 +68,13 @@ const Popup = () => {
           OpenAI Key
         </label>
 
-        <input
+        <Input
           id="openai-key"
           type="password"
           onChange={updateOpenAIKey}
           onBlur={updateKeyInStorage}
           value={openAIKey}
           placeholder="Your OpenAI Key"
-          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         />
       </div>
 
@@ -85,7 +85,7 @@ const Popup = () => {
             href="https://platform.openai.com/api-keys"
             target="_blank"
             rel="noreferrer"
-            className="text-indigo-600 hover:text-indigo-500"
+            className="text-primary/lg underline underline-offset-2 hover:text-primary"
           >
             here
           </a>
@@ -107,16 +107,20 @@ const Popup = () => {
           }}
         >
           <div className="flex items-center gap-x-2">
-            <input
+            <Input
               type="text"
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               value={newType}
               placeholder="Group Type"
               onChange={(e) => {
                 setNewType(e.target.value);
               }}
             />
-            <button className="rounded-md w-fit bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+
+            <button
+              className="rounded-md w-fit bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
+            text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 
+            focus-visible:outline-offset-2"
+            >
               Add
             </button>
           </div>
@@ -124,9 +128,8 @@ const Popup = () => {
 
         {types?.map((type, idx) => (
           <div className="flex items-center gap-x-2" key={idx}>
-            <input
+            <Input
               placeholder="Group Type"
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               value={type}
               onChange={(e) => {
                 const newTypes = [...types];
@@ -151,7 +154,9 @@ const Popup = () => {
 
       <button
         disabled={!openAIKey || !types || !types.length}
-        className="inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
+        text-white shadow-sm hover:bg-primary focus-visible:outline cursor-pointer
+        focus-visible:outline-2 focus-visible:outline-offset-2"
         onClick={getAllTabsInfo}
       >
         {isLoading ? <LoadingSpinner /> : null}
@@ -168,9 +173,9 @@ const Popup = () => {
             onClick={disableGrouping}
           />
           <label htmlFor="switch" className="hidden"></label>
-          <div className="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-indigo-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
+          <div className="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
         </label>
-        <span className="ml-3 text-gray-600 text-sm font-light">
+        <span className="ml-3 text-gray-900 text-sm">
           Allow automatic grouping
         </span>
       </div>
