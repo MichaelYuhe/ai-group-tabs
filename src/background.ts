@@ -88,10 +88,12 @@ async function processTabAndGroup(tab: chrome.tabs.Tab, types: any) {
 
 async function handleNewTab(tab: chrome.tabs.Tab) {
   const enable = await getStorage<boolean>("isOn");
+  const window = await chrome.windows.get(tab.windowId);
   if (
     !enable ||
     !tab.id ||
     !tab.url ||
+    window.type != "normal" ||
     !types.length ||
     (tab.status === "complete" && tab.url.startsWith("chrome://"))
   ) {
@@ -110,10 +112,12 @@ async function handleTabUpdate(
   tab: chrome.tabs.Tab
 ) {
   const enable = await getStorage<boolean>("isOn");
+  const window = await chrome.windows.get(tab.windowId);
   if (
     !enable ||
     !tab.id ||
     !tab.url ||
+    window.type != "normal" ||
     tab.url.startsWith("chrome://") ||
     changeInfo.status !== "complete"
   ) {
