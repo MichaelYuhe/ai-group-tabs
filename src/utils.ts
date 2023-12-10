@@ -10,14 +10,23 @@ export function setStorage<V = any>(key: string, value: V) {
   });
 }
 
-export function getStorage<V = any>(key: string): Promise<V> {
+export function getStorage<V = any>(key: string): Promise<V | undefined> {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get(key, (result) => {
       if (chrome.runtime.lastError) {
         reject(chrome.runtime.lastError);
       } else {
-        resolve(result[key] as V);
+        resolve(result[key]);
       }
     });
   });
 }
+
+export const DEFAULT_GROUP = [
+  "Social",
+  "Entertainment",
+  "Read Material",
+  "Education",
+  "Productivity",
+  "Utilities",
+];

@@ -4,8 +4,10 @@ import "./options.css";
 import { getStorage, setStorage } from "./utils";
 
 const Options = () => {
-  const [model, setModel] = useState<string>("gpt-4");
-  const [apiURL, setApiURL] = useState<string>("https://api.openai.com");
+  const [model, setModel] = useState<string | undefined>("gpt-4");
+  const [apiURL, setApiURL] = useState<string | undefined>(
+    "https://api.openai.com"
+  );
 
   useEffect(() => {
     getStorage<string>("model").then(setModel);

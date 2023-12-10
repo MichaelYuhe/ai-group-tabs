@@ -1,22 +1,27 @@
 import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { LoadingSpinner } from "./components/LoadingSpinner";
 import { batchGroupTabs } from "./services";
-import { getStorage, setStorage } from "./utils";
+import { DEFAULT_GROUP, getStorage, setStorage } from "./utils";
+
 import "./popup.css";
 
 const Popup = () => {
-  const [openAIKey, setOpenAIKey] = useState<string>("");
+  const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
   const [types, setTypes] = useState<string[]>([]);
-  const [isOn, setIsOn] = useState<boolean>(true);
+  const [isOn, setIsOn] = useState<boolean | undefined>(true);
   const [newType, setNewType] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
     getStorage<boolean>("isOn").then(setIsOn);
-    chrome.storage.local.get("types", (result) => {
-      if (result?.types) {
-        setTypes(result.types);
+    getStorage<string[]>("types").then((types) => {
+      if (!types) {
+        setTypes(DEFAULT_GROUP);
+        return;
       }
+      setTypes(types);
     });
   }, []);
 
@@ -32,12 +37,17 @@ const Popup = () => {
     if (!openAIKey || !types || !types.length) {
       return;
     }
-
-    updateKeyInStorage();
-    const tabs = await chrome.tabs.query({ currentWindow: true });
-
-    const result = await batchGroupTabs(tabs, types, openAIKey);
-    chrome.runtime.sendMessage({ result });
+    try {
+      setIsLoading(true);
+      const tabs = await chrome.tabs.query({ currentWindow: true });
+      const result = await batchGroupTabs(tabs, types, openAIKey);
+      chrome.runtime.sendMessage({ result });
+    } catch (error) {
+      // TODO show error message
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const disableGrouping = () => {
@@ -61,22 +71,39 @@ const Popup = () => {
           id="openai-key"
           type="password"
           onChange={updateOpenAIKey}
+          onBlur={updateKeyInStorage}
           value={openAIKey}
           placeholder="Your OpenAI Key"
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         />
       </div>
 
+      {!openAIKey?.length && (
+        <div className="text-sm text-gray-500 mb-2">
+          You can get your key from{" "}
+          <a
+            href="https://platform.openai.com/api-keys"
+            target="_blank"
+            rel="noreferrer"
+            className="text-indigo-600 hover:text-indigo-500"
+          >
+            here
+          </a>
+        </div>
+      )}
+
       <div className="flex flex-col gap-y-2 mb-2">
         <form
           onSubmit={(e) => {
+            if (!newType) {
+              return;
+            }
             const newTypes = [...types, newType];
             setNewType("");
             setTypes(newTypes);
             e.preventDefault();
 
-            chrome.storage.local.set({ types: newTypes });
-            chrome.runtime.sendMessage({ types: newTypes });
+            setStorage<string[]>("types", newTypes);
           }}
         >
           <div className="flex items-center gap-x-2">
@@ -84,6 +111,7 @@ const Popup = () => {
               type="text"
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               value={newType}
+              placeholder="Group Type"
               onChange={(e) => {
                 setNewType(e.target.value);
               }}
@@ -112,9 +140,7 @@ const Popup = () => {
                 const newTypes = [...types];
                 newTypes.splice(idx, 1);
                 setTypes(newTypes);
-
-                chrome.storage.local.set({ types: newTypes });
-                chrome.runtime.sendMessage({ types: newTypes });
+                setStorage<string[]>("types", newTypes);
               }}
             >
               Delete
@@ -125,9 +151,10 @@ const Popup = () => {
 
       <button
         disabled={!openAIKey || !types || !types.length}
-        className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        className="inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         onClick={getAllTabsInfo}
       >
+        {isLoading ? <LoadingSpinner /> : null}
         Group Existing Tabs
       </button>
 
