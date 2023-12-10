@@ -46,9 +46,9 @@ export async function batchGroupTabs(
               },
               {
                 role: "user",
-                content: `Based on the URL ${
-                  tab.url
-                }, classify the browser tab type as one of the following: ${types.join(
+                content: `Based on the URL: "${tab.url}" and title: "${
+                  tab.title
+                }", classify the browser tab type as one of the following: ${types.join(
                   ", "
                 )}. Respond with only the classification keyword from the list.`,
               },
@@ -95,9 +95,9 @@ export async function handleOneTab(
           },
           {
             role: "user",
-            content: `Based on the URL ${
-              tab.url
-            }, classify the browser tab type as one of the following: ${types.join(
+            content: `Based on the URL: "${tab.url}" and title: "${
+              tab.title
+            }", classify the browser tab type as one of the following: ${types.join(
               ", "
             )}. Respond with only the classification keyword from the list.`,
           },
