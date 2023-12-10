@@ -159,7 +159,7 @@ const Popup = () => {
         focus-visible:outline-2 focus-visible:outline-offset-2"
         onClick={getAllTabsInfo}
       >
-        {isLoading ? <LoadingSpinner /> : null}
+        {isLoading && <LoadingSpinner />}
         Group Existing Tabs
       </button>
 
