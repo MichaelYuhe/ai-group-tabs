@@ -74,7 +74,7 @@ async function processTabAndGroup(tab: chrome.tabs.Tab, types: any) {
   );
 
   // Check if a group already exists for this type
-  let groupId = tabMap.get(type);
+  const groupId = tabMap.get(type);
 
   // If groupId is not undefined, it means a group with that type already exists
   if (groupId !== undefined) {
