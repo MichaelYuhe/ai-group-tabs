@@ -127,9 +127,10 @@ const Popup = () => {
             />
 
             <button
+              disabled={!newType}
               className="rounded-md w-fit bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
             text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 
-            focus-visible:outline-offset-2"
+            focus-visible:outline-offset-2 disabled:bg-primary/sm"
             >
               Add
             </button>
