@@ -8,7 +8,8 @@ A Chrome extension helps you group your tabs with AI.
 >
 > [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/+99v98-XOQY0zZGNl)
 
-Demo Video: 
+Demo Video:
+
 > [![Watch the video](https://img.youtube.com/vi/SjfKiXy3zOc/default.jpg)](https://youtu.be/SjfKiXy3zOc)
 
 ## Roadmap
@@ -31,10 +32,6 @@ Demo Video:
 Download the latest released `dist.zip` from [the release page](https://github.com/MichaelYuhe/ai-group-tabs/releases), unzip after download, you will get a folder named `dist`.
 
 Open Chrome, go to `chrome://extensions/`, turn on `Developer mode` on the top right corner, click `Load unpacked` on the top left corner, select the `dist` folder you just unzipped.
-
-- Fill in the OpenAI API key, add some types and click on the "Save" button.
-- Click on the "Group Tabs" button, your current tabs will be grouped.
-- Your new tab will be grouped automatically.
 
 > You can change the model and API server in the options page.
 
