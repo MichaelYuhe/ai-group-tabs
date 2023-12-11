@@ -54,15 +54,6 @@ pnpm build
 
 [![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com?referralCode=MichaelYuhe&utm_source=ai-group-tab&utm_campaign=oss)
 
-
-## Contributors
-
-<p align="center">
-<a href="https://github.com/MichaelYuhe/ai-group-tabs/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=MichaelYuhe/ai-group-tabs" />
-</a></p>
-
-
 ## Star History
 <div align="left">
 <picture>
@@ -84,3 +75,11 @@ pnpm build
   />
 </picture>
 </div>
+
+
+## Contributors
+
+<p align="left">
+<a href="https://github.com/MichaelYuhe/ai-group-tabs/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=MichaelYuhe/ai-group-tabs" style="width: 60%"/>
+</a></p>
