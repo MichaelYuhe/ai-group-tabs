@@ -5,7 +5,8 @@
   "packageManager": "pnpm@8.11.0",
   "scripts": {
     "prepare": "husky install",
-    "dev": "vite build --watch",
+    "preinstall": "chmod +x ./scripts/setup.sh && ./scripts/setup.sh",
+    "dev": "vite",
     "build": "vite build",
     "style": "prettier --check \"src/**/*.{ts,tsx}\"",
     "style:fix": "prettier --write \"src/**/*.{ts,tsx}\""
@@ -13,6 +14,7 @@
   "author": "MichaelYuhe",
   "license": "MIT",
   "dependencies": {
+    "@crxjs/vite-plugin": "../chrome-extension-tools/packages/vite-plugin",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -25,7 +27,7 @@
     "@types/node": "^20.10.4",
     "@types/react": "^18.0.29",
     "@types/react-dom": "^18.0.11",
-    "@vitejs/plugin-react-swc": "^3.5.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.16",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",

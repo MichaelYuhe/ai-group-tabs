@@ -4,3 +4,4 @@ dist/
 tmp/
 .DS_Store
 dist.zip
+chrome-extension-tools

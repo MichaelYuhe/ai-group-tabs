@@ -1,24 +1,42 @@
 import { defineConfig } from "vite";
-import { resolve } from "path";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
+import { crx, defineManifest } from "@crxjs/vite-plugin";
+
+const manifest = defineManifest({
+  manifest_version: 3,
+  name: "AI Group Tabs",
+  description: "Group your tabs with AI",
+  version: "1.0",
+  options_ui: {
+    page: "options.html",
+    open_in_tab: true,
+  },
+  action: {
+    default_icon: "icon.png",
+    default_popup: "popup.html",
+  },
+  content_scripts: [
+    {
+      matches: ["<all_urls>"],
+      js: ["src/content-script.ts"],
+    },
+  ],
+  background: {
+    service_worker: "src/background.ts",
+    type: "module",
+  },
+  permissions: ["storage", "tabs", "tabGroups"],
+  host_permissions: ["<all_urls>"],
+});
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  build: {
-    rollupOptions: {
-      input: {
-        popup: resolve(__dirname, "popup.html"),
-        options: resolve(__dirname, "options.html"),
-        service_worker: resolve(__dirname, "src/background.ts"),
-        content_script: resolve(__dirname, "src/content-script.ts"),
-      },
-      output: {
-        chunkFileNames: "[name].[hash].js",
-        assetFileNames: "[name].[hash].[ext]",
-        entryFileNames: "[name].js",
-        dir: "dist",
-      },
-    },
+  plugins: [
+    react(),
+    // @ts-ignore
+    crx({ manifest }),
+  ],
+  server: {
+    port: 5173,
   },
 });
