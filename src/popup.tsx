@@ -20,6 +20,7 @@ const Popup = () => {
     getStorage<string[]>("types").then((types) => {
       if (!types) {
         setTypes(DEFAULT_GROUP);
+        setStorage<string[]>("types", DEFAULT_GROUP);
         return;
       }
       setTypes(types);
