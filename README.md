@@ -26,6 +26,7 @@ Demo Video:
 - [x] Use Vite and pnpm
 - [x] Group the updated tab only when a tab is updated
 - [x] Custom model and API server
+- [x] HMR for development
 
 ## Download and Start Using
 
