@@ -53,3 +53,34 @@ pnpm build
 > Everyone contributor can get your one month free of Developer Plan on Zeabur.
 
 [![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com?referralCode=MichaelYuhe&utm_source=ai-group-tab&utm_campaign=oss)
+
+
+## Contributors
+
+<p align="center">
+<a href="https://github.com/MichaelYuhe/ai-group-tabs/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=MichaelYuhe/ai-group-tabs" />
+</a></p>
+
+
+## Star History
+<div align="left">
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="
+      https://api.star-history.com/svg?repos=MichaelYuhe/ai-group-tabs&type=Date&theme=dark
+    "
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="
+      https://api.star-history.com/svg?repos=MichaelYuhe/ai-group-tabs&type=Date
+    "
+  />
+  <img
+    alt="Star History Chart"
+    src="https://api.star-history.com/svg?repos=MichaelYuhe/ai-group-tabs&type=Date"
+  />
+</picture>
+</div>
