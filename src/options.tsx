@@ -4,9 +4,9 @@ import "./options.css";
 import { getStorage, setStorage } from "./utils";
 
 const Options = () => {
-  const [model, setModel] = useState<string | undefined>("gpt-4");
+  const [model, setModel] = useState<string | undefined>("gpt-3.5-turbo");
   const [apiURL, setApiURL] = useState<string | undefined>(
-    "https://api.openai.com"
+    "https://api.openai.com/v1/chat/completions"
   );
 
   useEffect(() => {
@@ -48,7 +48,6 @@ const Options = () => {
             <option value="gpt-4-32k">GPT 4 32k</option>
             <option value="gpt-3.5-turbo-1106">GPT 3.5 turbo 1106</option>
             <option value="gpt-3.5-turbo">GPT 3.5 turbo</option>
-            <option value="gpt-3.5">GPT 3.5</option>
           </select>
         </div>
 

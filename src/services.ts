@@ -25,7 +25,7 @@ export async function batchGroupTabs(
     };
   });
 
-  const model = (await getStorage("model")) || "gpt-4";
+  const model = (await getStorage("model")) || "gpt-3.5-turbo";
   const apiURL =
     (await getStorage("apiURL")) ||
     "https://api.openai.com/v1/chat/completions";
@@ -81,7 +81,7 @@ export async function handleOneTab(
   openAIKey: string
 ) {
   try {
-    const model = (await getStorage("model")) || "gpt-4";
+    const model = (await getStorage("model")) || "gpt-3.5-turbo";
     const apiURL =
       (await getStorage("apiURL")) ||
       "https://api.openai.com/v1/chat/completions";
