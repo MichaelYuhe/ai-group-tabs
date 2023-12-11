@@ -1,28 +1,18 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
+import React from "react";
 import { createRoot } from "react-dom/client";
 import "./options.css";
-import { getStorage, setStorage } from "./utils";
+import { useStorage } from "@plasmohq/storage/hook";
+import { getValueOrPersistDefault } from "./utils";
 
 const Options = () => {
-  const [model, setModel] = useState<string | undefined>("gpt-3.5-turbo");
-  const [apiURL, setApiURL] = useState<string | undefined>(
-    "https://api.openai.com/v1/chat/completions"
+  const [model, setModel] = useStorage<string>(
+    "model",
+    getValueOrPersistDefault("gpt-3.5-turbo")
   );
-
-  useEffect(() => {
-    getStorage<string>("model").then(setModel);
-    getStorage<string>("apiURL").then(setApiURL);
-  }, []);
-
-  const updateModel = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
-    setModel(e.target.value);
-    setStorage("model", e.target.value);
-  }, []);
-
-  const updateApiURL = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setApiURL(e.target.value);
-    setStorage("apiURL", e.target.value);
-  }, []);
+  const [apiURL, setApiURL] = useStorage<string>(
+    "apiURL",
+    getValueOrPersistDefault("https://api.openai.com/v1/chat/completions")
+  );
 
   return (
     <div className="w-screen h-screen flex justify-center p-12">
@@ -38,7 +28,7 @@ const Options = () => {
 
           <select
             value={model}
-            onChange={updateModel}
+            onChange={(e) => setModel(e.target.value)}
             id="models"
             className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
           focus:ring-blue-500 focus:border-blue-500 block"
@@ -60,7 +50,7 @@ const Options = () => {
             className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
           focus:ring-blue-500 focus:border-blue-500 block"
             value={apiURL}
-            onChange={updateApiURL}
+            onChange={(e) => setApiURL(e.target.value)}
             id="api_url"
           />
         </div>

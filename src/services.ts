@@ -1,4 +1,4 @@
-import { getStorage } from "./utils";
+import { Storage } from "@plasmohq/storage";
 
 interface TabGroup {
   type: string;
@@ -25,9 +25,11 @@ export async function batchGroupTabs(
     };
   });
 
-  const model = (await getStorage("model")) || "gpt-3.5-turbo";
-  const apiURL =
-    (await getStorage("apiURL")) ||
+  const storage = new Storage();
+
+  const model: string = (await storage.get<string>("model")) || "gpt-3.5-turbo";
+  const apiURL: string =
+    (await storage.get<string>("apiURL")) ||
     "https://api.openai.com/v1/chat/completions";
 
   try {
@@ -81,9 +83,11 @@ export async function handleOneTab(
   openAIKey: string
 ) {
   try {
-    const model = (await getStorage("model")) || "gpt-3.5-turbo";
-    const apiURL =
-      (await getStorage("apiURL")) ||
+    const storage = new Storage();
+    const model: string =
+      (await storage.get<string>("model")) || "gpt-3.5-turbo";
+    const apiURL: string =
+      (await storage.get<string>("apiURL")) ||
       "https://api.openai.com/v1/chat/completions";
 
     const response = await fetch(apiURL, {

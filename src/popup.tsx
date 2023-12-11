@@ -1,39 +1,30 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { batchGroupTabs } from "./services";
-import { DEFAULT_GROUP, getStorage, setStorage } from "./utils";
+import { DEFAULT_GROUP, getValueOrPersistDefault } from "./utils";
 
 import "./popup.css";
 import Input from "./components/Input";
+import { useStorage } from "@plasmohq/storage/hook";
 
 const Popup = () => {
-  const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
-  const [types, setTypes] = useState<string[]>([]);
-  const [isOn, setIsOn] = useState<boolean | undefined>(true);
+  // states that sync with local storage
+  const [openAIKey, setOpenAIKey] = useStorage<string>(
+    "openai_key",
+    getValueOrPersistDefault("")
+  );
+  const [types, setTypes] = useStorage<string[]>(
+    "types",
+    getValueOrPersistDefault(DEFAULT_GROUP)
+  );
+  const [isOn, setIsOn] = useStorage<boolean>(
+    "isOn",
+    getValueOrPersistDefault(true)
+  );
+  // states that only exist in popup page
   const [newType, setNewType] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    getStorage<string>("openai_key").then(setOpenAIKey);
-    getStorage<boolean>("isOn").then(setIsOn);
-    getStorage<string[]>("types").then((types) => {
-      if (!types) {
-        setTypes(DEFAULT_GROUP);
-        setStorage<string[]>("types", DEFAULT_GROUP);
-        return;
-      }
-      setTypes(types);
-    });
-  }, []);
-
-  const updateOpenAIKey = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setOpenAIKey(e.target.value);
-  }, []);
-
-  const updateKeyInStorage = useCallback(() => {
-    setStorage("openai_key", openAIKey);
-  }, [openAIKey]);
 
   const getAllTabsInfo = async () => {
     if (!openAIKey || !types || !types.length) {
@@ -52,13 +43,6 @@ const Popup = () => {
     }
   };
 
-  const disableGrouping = () => {
-    setIsOn((isOn) => {
-      setStorage("isOn", !isOn);
-      return !isOn;
-    });
-  };
-
   return (
     <div className="p-6 min-w-[24rem]">
       <div className="relative mb-2">
@@ -72,8 +56,8 @@ const Popup = () => {
         <Input
           id="openai-key"
           type="password"
-          onChange={updateOpenAIKey}
-          onBlur={updateKeyInStorage}
+          onChange={(e) => setOpenAIKey(e.target.value)}
+          onBlur={(e) => setOpenAIKey(e.target.value)}
           value={openAIKey}
           placeholder="Your OpenAI Key"
         />
@@ -103,8 +87,6 @@ const Popup = () => {
             setNewType("");
             setTypes(newTypes);
             e.preventDefault();
-
-            setStorage<string[]>("types", newTypes);
           }}
         >
           <div className="flex items-center gap-x-2">
@@ -144,7 +126,6 @@ const Popup = () => {
                 const newTypes = [...types];
                 newTypes.splice(idx, 1);
                 setTypes(newTypes);
-                setStorage<string[]>("types", newTypes);
               }}
             >
               Delete
@@ -171,7 +152,7 @@ const Popup = () => {
             type="checkbox"
             checked={isOn}
             className="peer sr-only"
-            onClick={disableGrouping}
+            onClick={(_) => setIsOn(!isOn)}
           />
           <label htmlFor="switch" className="hidden"></label>
           <div className="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
