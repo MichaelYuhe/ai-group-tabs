@@ -6,7 +6,7 @@ import { getStorage, setStorage } from "./utils";
 const Options = () => {
   const [model, setModel] = useState<string | undefined>("gpt-3.5-turbo");
   const [apiURL, setApiURL] = useState<string | undefined>(
-    "https://api.openai.com"
+    "https://api.openai.com/v1/chat/completions"
   );
 
   useEffect(() => {
