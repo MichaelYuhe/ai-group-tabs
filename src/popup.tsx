@@ -59,6 +59,15 @@ const Popup = () => {
     });
   };
 
+  const ungroup = async () => {
+    try {
+      const tabs = await chrome.tabs.query({ currentWindow: true });
+      chrome.tabs.ungroup(tabs.map((tab) => tab.id!));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="p-6 min-w-[24rem]">
       <div className="relative mb-2">
@@ -153,16 +162,27 @@ const Popup = () => {
         ))}
       </div>
 
-      <button
-        disabled={!openAIKey || !types || !types.length}
-        className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
+      <div className="flex items-center gap-x-4">
+        <button
+          disabled={!openAIKey || !types || !types.length}
+          className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
         text-white shadow-sm hover:bg-primary focus-visible:outline cursor-pointer
         focus-visible:outline-2 focus-visible:outline-offset-2"
-        onClick={getAllTabsInfo}
-      >
-        {isLoading && <LoadingSpinner />}
-        Group Existing Tabs
-      </button>
+          onClick={getAllTabsInfo}
+        >
+          {isLoading && <LoadingSpinner />}
+          Group Existing Tabs
+        </button>
+
+        <button
+          className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
+        text-white shadow-sm hover:bg-primary focus-visible:outline cursor-pointer
+        focus-visible:outline-2 focus-visible:outline-offset-2"
+          onClick={ungroup}
+        >
+          Ungroup All
+        </button>
+      </div>
 
       <div className="flex items-center mt-2">
         <label className="relative inline-flex cursor-pointer items-center">
