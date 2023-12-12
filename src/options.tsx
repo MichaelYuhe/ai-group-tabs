@@ -138,15 +138,24 @@ function FeatureFlags() {
   const [isColorsEnabled, setIsColorsEnabled] = useState<boolean | undefined>(
     false
   );
+  const [isToatserEnabled, setIsToatserEnabled] = useState<boolean | undefined>(
+    false
+  );
 
   useEffect(() => {
     getStorage<boolean>("colorsEnabled").then(setIsColorsEnabled);
+    getStorage<boolean>("toasterEnabled").then(setIsToatserEnabled);
   }, []);
 
   const updateColorsEnabled = useCallback(() => {
     setIsColorsEnabled(!isColorsEnabled);
     setStorage("colorsEnabled", !isColorsEnabled);
   }, [isColorsEnabled]);
+
+  const updateToasterEnabled = useCallback(() => {
+    setIsToatserEnabled(!isToatserEnabled);
+    setStorage("toasterEnabled", !isToatserEnabled);
+  }, [isToatserEnabled]);
 
   return (
     <div className="flex flex-col p-4">
@@ -156,6 +165,14 @@ function FeatureFlags() {
           updateColorsEnabled();
         }}
         text="Enable Colors Customization"
+      />
+
+      <Switch
+        isChecked={isToatserEnabled !== undefined ? isToatserEnabled : false}
+        onChange={() => {
+          updateToasterEnabled();
+        }}
+        text="Enable Toaster"
       />
     </div>
   );
