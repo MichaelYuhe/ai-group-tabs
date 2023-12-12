@@ -17,7 +17,7 @@ chrome.storage.local.get("types", (result) => {
   }
 });
 
-const tabMap = new Map<string, number>();
+const windowGroupMaps: { [key: number]: Map<string, number> } = {};
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   chrome.storage.local.get("types", (resultStorage) => {
@@ -39,27 +39,50 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 chrome.tabGroups.onUpdated.addListener((group) => {
-  if (!group.title) return;
-  const type = group.title;
-
-  if (tabMap.has(type)) return;
-
-  tabMap.set(type, group.id);
+  if (!windowGroupMaps.hasOwnProperty(group.windowId)) {
+    windowGroupMaps[group.windowId] = new Map<string, number>();
+  }
+  if (group.title) {
+    windowGroupMaps[group.windowId].set(group.title, group.id);
+  }
 });
 
 async function groupOneType(type: string, tabIds: number[]) {
   if (tabIds.length === 0) return;
 
-  chrome.tabs.group({ tabIds }, async (groupId) => {
-    await chrome.tabGroups.update(groupId, { title: type });
-  });
+  const windowIdMap: { [key: number]: number[] } = {};
+
+  const getTab = (tabId: number) =>
+    new Promise((resolve) => {
+      chrome.tabs.get(tabId, (tab) => {
+        if (!windowIdMap[tab.windowId]) {
+          windowIdMap[tab.windowId] = [tabId];
+        } else {
+          windowIdMap[tab.windowId].push(tabId);
+        }
+        resolve(tab);
+      });
+    });
+
+  await Promise.all(tabIds.map((tabId) => getTab(tabId)));
+
+  for (const windowId in windowIdMap) {
+    const tabsForWindow = windowIdMap[windowId];
+    chrome.tabs.group({ tabIds: tabsForWindow }, async (groupId) => {
+      await chrome.tabGroups.update(groupId, { title: type });
+    });
+  }
 }
 
 async function createGroupWithTitle(tabId: number, title: string) {
   try {
-    const groupId = await chrome.tabs.group({ tabIds: [tabId] });
-    await chrome.tabGroups.update(groupId, { title });
-    tabMap.set(title, groupId);
+    chrome.tabs.get(tabId, async (tab) => {
+      if (tab.windowId) {
+        const groupId = await chrome.tabs.group({ tabIds: [tabId] });
+        await chrome.tabGroups.update(groupId, { title });
+        windowGroupMaps[tab.windowId].set(title, groupId);
+      }
+    });
   } catch (error) {
     console.error("Error creating tab group:", error);
     throw error;
@@ -67,18 +90,27 @@ async function createGroupWithTitle(tabId: number, title: string) {
 }
 
 async function processTabAndGroup(tab: chrome.tabs.Tab, types: any) {
-  if (!tab.id) {
-    throw new Error("Tab ID is undefined!");
+  if (!tab.id || !tab.windowId) {
+    throw new Error("Tab ID or WindowID is undefined!");
   }
   const openAIKey = await getStorage<string>("openai_key");
   if (!openAIKey) return;
 
   const type = await handleOneTab(tab, types, openAIKey);
 
+  // Get or create proper tabMap for the window
+  if (!windowGroupMaps.hasOwnProperty(tab.windowId)) {
+    windowGroupMaps[tab.windowId] = new Map();
+  }
+  const tabMap = windowGroupMaps[tab.windowId];
+
   // Query all groups and update tabMap accordingly
   const allGroups = await chrome.tabGroups.query({});
   allGroups.forEach(
-    (group) => group.title && tabMap.set(group.title, group.id)
+    (group) =>
+      group.windowId === tab.windowId &&
+      group.title &&
+      tabMap.set(group.title, group.id)
   );
 
   // Check if a group already exists for this type
@@ -141,3 +173,12 @@ async function handleTabUpdate(
 
 chrome.tabs.onCreated.addListener(handleNewTab);
 chrome.tabs.onUpdated.addListener(handleTabUpdate);
+chrome.tabs.onDetached.addListener((tabId, detachInfo) => {
+  const windowId = detachInfo.oldWindowId;
+  if (
+    windowGroupMaps.hasOwnProperty(windowId) &&
+    !chrome.tabs.query({ windowId })
+  ) {
+    delete windowGroupMaps[windowId];
+  }
+});
