@@ -61,6 +61,7 @@ const Options = () => {
           focus:ring-blue-500 focus:border-blue-500 block"
           >
             <option selected>Choose a model</option>
+            <option value="transformer.js">Transformer.js</option>
             <option value="gpt-4">GPT 4</option>
             <option value="gpt-4-32k">GPT 4 32k</option>
             <option value="gpt-3.5-turbo-1106">GPT 3.5 turbo 1106</option>
@@ -68,49 +69,56 @@ const Options = () => {
           </select>
         </div>
 
-        <div className="flex flex-col gap-y-2">
-          <label htmlFor="api_url" className="text-xl font-medium">
-            API URL
-          </label>
+        <div>
+          {model !== "transformer.js" && (
+            <div>
+              <div className="flex flex-col gap-y-2">
+                <label htmlFor="api_url" className="text-xl font-medium">
+                  API URL
+                </label>
 
-          <input
-            className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
-          focus:ring-blue-500 focus:border-blue-500 block"
-            value={apiURL}
-            onChange={updateApiURL}
-            id="api_url"
-          />
-        </div>
+                <input
+                  className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+                focus:ring-blue-500 focus:border-blue-500 block"
+                  value={apiURL}
+                  onChange={updateApiURL}
+                  id="api_url"
+                />
+              </div>
+              <div className="flex flex-col gap-y-2">
+                <label htmlFor="prompt" className="text-xl font-medium">
+                  Prompt
+                </label>
+                {isPromptValid && (
+                  <label
+                    htmlFor="prompt"
+                    className="text-sm font-normal w-64 text-blue-500"
+                  >
+                    {promptFormatWarning}
+                  </label>
+                )}
 
-        <div className="flex flex-col gap-y-2">
-          <label htmlFor="prompt" className="text-xl font-medium">
-            Prompt
-          </label>
-          {isPromptValid && (
-            <label
-              htmlFor="prompt"
-              className="text-sm font-normal w-64 text-blue-500"
-            >
-              {promptFormatWarning}
-            </label>
-          )}
+                {!isPromptValid && (
+                  <div
+                    className=" w-64 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                    role="alert"
+                  >
+                    <span className="block sm:inline">
+                      {promptFormatWarning}
+                    </span>
+                  </div>
+                )}
 
-          {!isPromptValid && (
-            <div
-              className=" w-64 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-              role="alert"
-            >
-              <span className="block sm:inline">{promptFormatWarning}</span>
+                <textarea
+                  className="bg-gray-50 border w-64 h-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+                    focus:ring-blue-500 focus:border-blue-500 block"
+                  value={prompt}
+                  onChange={updatePrompt}
+                  id="prompt"
+                />
+              </div>
             </div>
           )}
-
-          <textarea
-            className="bg-gray-50 border w-64 h-64 border-gray-300 text-gray-900 text-sm rounded-lg 
-          focus:ring-blue-500 focus:border-blue-500 block"
-            value={prompt}
-            onChange={updatePrompt}
-            id="prompt"
-          />
         </div>
       </div>
     </div>

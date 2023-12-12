@@ -1,5 +1,40 @@
 import { handleOneTab } from "./services";
 import { DEFAULT_GROUP, DEFAULT_PROMPT, getStorage, setStorage } from "./utils";
+import { pipeline, env, Pipeline } from "@xenova/transformers";
+
+env.allowLocalModels = false;
+env.backends.onnx.wasm.numThreads = 1;
+
+console.log("ok background");
+
+class PipelineSingleton {
+  static task = "zero-shot-classification";
+  static model = "Xenova/mobilebert-uncased-mnli";
+  static instance: Pipeline | null = null;
+
+  static async getInstance(progress_callback = null) {
+    console.log("get instance");
+    if (this.instance === null) {
+      if (progress_callback) {
+        this.instance = await pipeline(this.task, this.model, {
+          progress_callback,
+        });
+      } else {
+        this.instance = await pipeline(this.task, this.model);
+      }
+    }
+
+    return this.instance;
+  }
+}
+
+const classify = async (text: string, labels: string[]): Promise<string> => {
+  let model = await PipelineSingleton.getInstance();
+  let result = await model(text, labels);
+  console.log(model);
+  console.log(result);
+  return result.labels[0];
+};
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
@@ -95,9 +130,18 @@ async function processTabAndGroup(tab: chrome.tabs.Tab, types: any) {
     throw new Error("Tab ID or WindowID is undefined!");
   }
   const openAIKey = await getStorage<string>("openai_key");
-  if (!openAIKey) return;
+  const model = await getStorage<string>("model");
+  let type: string;
 
-  const type = await handleOneTab(tab, types, openAIKey);
+  if (model === "transformer.js") {
+    type = await classify(`${tab.title} ${tab.url}`, types);
+  } else {
+    if (!openAIKey) {
+      return;
+    } else {
+      type = await handleOneTab(tab, types, openAIKey);
+    }
+  }
 
   // Get or create proper tabMap for the window
   if (!windowGroupMaps.hasOwnProperty(tab.windowId)) {
