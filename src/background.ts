@@ -1,10 +1,11 @@
 import { handleOneTab } from "./services";
-import { DEFAULT_GROUP, getStorage, setStorage } from "./utils";
+import { DEFAULT_GROUP, DEFAULT_PROMPT, getStorage, setStorage } from "./utils";
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
     setStorage<boolean>("isOn", true);
     setStorage<string[]>("types", DEFAULT_GROUP);
+    setStorage<string>("prompt", DEFAULT_PROMPT);
   }
 });
 
