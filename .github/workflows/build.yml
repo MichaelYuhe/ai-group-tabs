@@ -35,3 +35,13 @@ jobs:
 
       - name: Build
         run: nr build
+
+      - name: zip bundle file
+        run: zip -r ai-group-tabs.zip dist/
+
+      - name: Upload package
+        uses: actions/upload-artifact@v3
+        with:
+          name: ai-group-tabs
+          path: ai-group-tabs.zip
+          retention-days: 5

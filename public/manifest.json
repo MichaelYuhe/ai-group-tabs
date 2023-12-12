@@ -21,6 +21,11 @@
     "type": "module",
     "service_worker": "service_worker.js"
   },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
   "permissions": ["storage", "tabs", "tabGroups"],
   "host_permissions": ["<all_urls>"]
 }
