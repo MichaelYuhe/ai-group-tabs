@@ -4,6 +4,7 @@ import { DEFAULT_GROUP, DEFAULT_PROMPT, getStorage, setStorage } from "./utils";
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
     setStorage<boolean>("isOn", true);
+    setStorage<boolean>("isAutoPosition", false);
     setStorage<string[]>("types", DEFAULT_GROUP);
     setStorage<string>("prompt", DEFAULT_PROMPT);
   }
@@ -120,6 +121,17 @@ async function processTabAndGroup(tab: chrome.tabs.Tab, types: any) {
   if (groupId !== undefined) {
     // Existing group is valid, add tab to this group.
     await chrome.tabs.group({ tabIds: tab.id, groupId });
+
+    const isAutoPosition = await getStorage<boolean>("isAutoPosition");
+
+    const currentWindowTabs = await chrome.tabs.query({
+      windowId: tab.windowId,
+    });
+    const isRightmost =
+      tab.index == Math.max(...currentWindowTabs.map((tab) => tab.index));
+    if (isAutoPosition && isRightmost) {
+      await chrome.tabGroups.move(groupId, { index: -1 });
+    }
   } else {
     // If no valid group is found, create a new group for this type
     await createGroupWithTitle(tab.id, type);
