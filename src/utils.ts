@@ -38,7 +38,8 @@ export const DEFAULT_PROMPT: string =
   `classify the browser tab type as one of the following: "{{types}}". ` +
   `Respond with only the classification keyword from the list.`;
 
-export function matchesRule(host: string, rule: FilterRuleItem) {
+export function matchesRule(url: URL, rule: FilterRuleItem) {
+  const host = url.host;
   const { type, rule: value } = rule;
   if (!value) {
     return false;
@@ -53,6 +54,9 @@ export function matchesRule(host: string, rule: FilterRuleItem) {
     case "DOMAIN-KEYWORD":
       // Keyword matching; example should match www.example.com
       return host.includes(value);
+    case "REGEX":
+      // Regular expression matching; https?://mail.google.com/* should match https://mail.google.com/mail/u/0/#inbox
+      return new RegExp(value).test(url.href);
     default:
       // If the rule type is unknown, return false.
       return false;

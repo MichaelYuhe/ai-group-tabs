@@ -1,4 +1,4 @@
-export type RuleType = "DOMAIN" | "DOMAIN-SUFFIX" | "DOMAIN-KEYWORD";
+export type RuleType = "DOMAIN" | "DOMAIN-SUFFIX" | "DOMAIN-KEYWORD" | "REGEX";
 
 export type FilterRuleItem = {
   id: number;

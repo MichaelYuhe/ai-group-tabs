@@ -1,9 +1,22 @@
 import { RuleType, FilterRuleItem } from "../types";
 
 const ruleTypes: { label: string; value: RuleType }[] = [
-  { label: "DOMAIN", value: "DOMAIN" },
-  { label: "DOMAIN-SUFFIX", value: "DOMAIN-SUFFIX" },
-  { label: "DOMAIN-KEYWORD", value: "DOMAIN-KEYWORD" },
+  {
+    label: "DOMAIN",
+    value: "DOMAIN",
+  },
+  {
+    label: "DOMAIN-SUFFIX",
+    value: "DOMAIN-SUFFIX",
+  },
+  {
+    label: "DOMAIN-KEYWORD",
+    value: "DOMAIN-KEYWORD",
+  },
+  {
+    label: "REGEX",
+    value: "REGEX",
+  },
 ];
 
 type FilterRuleItemProps = {
@@ -39,7 +52,7 @@ const FilterRuleItem = ({
         type="text"
         className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
         focus:ring-blue-500 focus:border-blue-500 block"
-        placeholder={`输入${ruleItem.type}`}
+        placeholder={`Please enter ${ruleItem.type}`}
         value={ruleItem.rule}
         onChange={(e) => handleRuleChange(id, e.target.value)}
       />
@@ -88,6 +101,22 @@ const FilterRules = ({ filterRules, updateFilterRules }: FilterRulesProps) => {
 
   return (
     <div>
+      <div>
+        <div>- DOMAIN: Exact match; example.com should match example.com</div>
+        <div>
+          - DOMAIN-SUFFIX: Suffix matching; example.com should match
+          www.example.com
+        </div>
+        <div>
+          - DOMAIN-KEYWORD: Keyword matching; example should match
+          www.example.com
+        </div>
+        <div>
+          - REGEX: Regular expression matching; https?://mail.google.com/*
+          should match https://mail.google.com/mail/u/0/#inbox
+        </div>
+      </div>
+
       {filterRules.map((item) => (
         <FilterRuleItem
           key={item.id}

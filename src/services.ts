@@ -26,7 +26,7 @@ const filterTabInfo = (tabInfo: TabInfo, filterRules: FilterRuleItem[]) => {
   if (!filterRules || !filterRules?.length) return true;
   const url = new URL(tabInfo.url ?? "");
   return !filterRules.some((rule) => {
-    return matchesRule(url.host, rule);
+    return matchesRule(url, rule);
   });
 };
 
