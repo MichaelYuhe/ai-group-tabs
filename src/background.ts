@@ -2,10 +2,16 @@ import { handleOneTab } from "./services";
 import { getStorage } from "./utils";
 
 let types: string[] = [];
+let colors: string[] = [];
 
 chrome.storage.local.get("types", (result) => {
   if (result.types) {
     types = result.types;
+  }
+});
+chrome.storage.local.get("colors", (result) => {
+  if (result.colors) {
+    colors = result.colors;
   }
 });
 
@@ -13,20 +19,22 @@ const tabMap = new Map<string, number>();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   chrome.storage.local.get("types", (resultStorage) => {
-    if (resultStorage.types) {
-      types = resultStorage.types;
-
-      const result = message.result;
-      types.forEach((_, i) => {
-        // Check if result[i] exists before accessing the 'type' property
-        if (result[i]) {
-          groupOneType(result[i].type, result[i].tabIds);
-        } else {
-          // Handle the case where there is no corresponding entry in result for this type
-          console.error(`No corresponding result for type index ${i}`);
-        }
-      });
-    }
+    chrome.storage.local.get("colors", (resultColors) => {
+      if (resultStorage.types) {
+        types = resultStorage.types;
+        if (resultColors.colors) colors = resultColors.colors;
+        const result = message.result;
+        types.forEach((_, i) => {
+          // Check if result[i] exists before accessing the 'type' property
+          if (result[i]) {
+            groupOneType(result[i].type, result[i].tabIds, colors[i]);
+          } else {
+            // Handle the case where there is no corresponding entry in result for this type
+            console.error(`No corresponding result for type index ${i}`);
+          }
+        });
+      }
+    });
   });
 });
 
@@ -39,11 +47,10 @@ chrome.tabGroups.onUpdated.addListener((group) => {
   tabMap.set(type, group.id);
 });
 
-async function groupOneType(type: string, tabIds: number[]) {
+async function groupOneType(type: string, tabIds: number[], color: string) {
   if (tabIds.length === 0) return;
-
   chrome.tabs.group({ tabIds }, async (groupId) => {
-    await chrome.tabGroups.update(groupId, { title: type });
+    await chrome.tabGroups.update(groupId, { title: type, color: color });
   });
 }
 

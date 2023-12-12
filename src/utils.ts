@@ -30,3 +30,15 @@ export const DEFAULT_GROUP = [
   "Productivity",
   "Utilities",
 ];
+
+export const DEFAULT_COLOR = [
+  "grey",
+  "blue",
+  "red",
+  "yellow",
+  "green",
+  "pink",
+  "purple",
+  "cyan",
+  "orange",
+];

@@ -1,8 +1,14 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { createRoot } from "react-dom/client";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { batchGroupTabs } from "./services";
-import { DEFAULT_GROUP, getStorage, setStorage } from "./utils";
+import { DEFAULT_COLOR, DEFAULT_GROUP, getStorage, setStorage } from "./utils";
 
 import "./popup.css";
 import Input from "./components/Input";
@@ -13,6 +19,8 @@ const Popup = () => {
   const [isOn, setIsOn] = useState<boolean | undefined>(true);
   const [newType, setNewType] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [color, setColor] = useState<string>("grey");
+  const [colors, setColors] = useState<string[]>([]);
 
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
@@ -24,6 +32,9 @@ const Popup = () => {
         return;
       }
       setTypes(types);
+    });
+    getStorage<string[]>("colors").then((colors) => {
+      if (colors) setColors(colors);
     });
   }, []);
 
@@ -109,11 +120,14 @@ const Popup = () => {
               return;
             }
             const newTypes = [...types, newType];
+            const newColors = [...colors, color];
             setNewType("");
             setTypes(newTypes);
+            setColors(newColors);
             e.preventDefault();
 
             setStorage<string[]>("types", newTypes);
+            setStorage<string[]>("colors", newColors);
           }}
         >
           <div className="flex items-center gap-x-2">
@@ -125,7 +139,6 @@ const Popup = () => {
                 setNewType(e.target.value);
               }}
             />
-
             <button
               disabled={!newType}
               className="rounded-md w-fit bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
@@ -136,6 +149,26 @@ const Popup = () => {
             </button>
           </div>
         </form>
+        <div className="flex items-center gap-x-2">
+          {DEFAULT_COLOR.map((colorOption) => (
+            <input
+              type="radio"
+              name="color"
+              className={`bg-${colorOption}-500 w-4 h-4 rounded-full`}
+              style={{
+                backgroundColor: colorOption,
+                borderColor: "transparent",
+                ["--tw-ring-color"]: colorOption,
+              }}
+              checked={color === colorOption}
+              value={colorOption}
+              onChange={(e) => {
+                setColor(e.target.value);
+                console.log(e.target.value);
+              }}
+            ></input>
+          ))}
+        </div>
 
         {types?.map((type, idx) => (
           <div className="flex items-center gap-x-2" key={idx}>
@@ -148,13 +181,21 @@ const Popup = () => {
                 setTypes(newTypes);
               }}
             />
-
+            <div
+              className={`bg-${colors[idx]}-500 w-4 h-4 rounded-full`}
+              style={{ backgroundColor: colors[idx], flexShrink: 0 }}
+            ></div>
             <button
               onClick={() => {
                 const newTypes = [...types];
+                const newColors = [...colors];
                 newTypes.splice(idx, 1);
+                newColors.splice(idx, 1);
+
                 setTypes(newTypes);
+                setColors(newColors);
                 setStorage<string[]>("types", newTypes);
+                setStorage<string[]>("colors", newColors);
               }}
             >
               Delete
