@@ -1,6 +1,6 @@
 # AI Group Tabs
 
-[![Build](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml)
+[![Build](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml) [![Notify](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/notify.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/notify.yml)
 
 A Chrome extension helps you group your tabs with AI.
 
