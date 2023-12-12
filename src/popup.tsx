@@ -10,13 +10,15 @@ import Input from "./components/Input";
 const Popup = () => {
   const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
   const [types, setTypes] = useState<string[]>([]);
-  const [isOn, setIsOn] = useState<boolean | undefined>(true);
+  const [isOn, setIsOn] = useState<boolean>(true);
   const [newType, setNewType] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
-    getStorage<boolean>("isOn").then(setIsOn);
+    getStorage<boolean>("isOn").then((v) => {
+      setIsOn(v === undefined ? true : v);
+    });
     getStorage<string[]>("types").then((types) => {
       if (!types) {
         setTypes(DEFAULT_GROUP);
