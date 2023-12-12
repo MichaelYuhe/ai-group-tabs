@@ -1,9 +1,6 @@
 name: Notify
 on:
-  workflow_dispatch:
-  release:
-    types: [published]
-
+  [workflow_dispatch, release]
 jobs:
   notify:
     name: Notify via Telegram
