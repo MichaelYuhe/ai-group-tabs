@@ -11,12 +11,16 @@ const Popup = () => {
   const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
   const [types, setTypes] = useState<string[]>([]);
   const [isOn, setIsOn] = useState<boolean | undefined>(true);
+  const [isAutoPosition, setIsAutoPosition] = useState<boolean | undefined>(
+    false
+  );
   const [newType, setNewType] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
     getStorage<boolean>("isOn").then(setIsOn);
+    getStorage<boolean>("isAutoPosition").then(setIsAutoPosition);
     getStorage<string[]>("types").then((types) => {
       if (!types) {
         setTypes(DEFAULT_GROUP);
@@ -56,6 +60,13 @@ const Popup = () => {
     setIsOn((isOn) => {
       setStorage("isOn", !isOn);
       return !isOn;
+    });
+  };
+
+  const enableAutoPosition = () => {
+    setIsAutoPosition((isAutoGroupPosition) => {
+      setStorage("isAutoPosition", !isAutoPosition);
+      return !isAutoPosition;
     });
   };
 
@@ -199,6 +210,23 @@ const Popup = () => {
         </label>
         <span className="ml-3 text-gray-900 text-sm">
           Allow automatic grouping
+        </span>
+      </div>
+
+      <div className="flex items-center mt-2">
+        <label className="relative inline-flex cursor-pointer items-center">
+          <input
+            id="autoPosition"
+            type="checkbox"
+            checked={isAutoPosition}
+            className="peer sr-only"
+            onClick={enableAutoPosition}
+          />
+          <label htmlFor="autoPosition" className="hidden"></label>
+          <div className="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
+        </label>
+        <span className="ml-3 text-gray-900 text-sm">
+          Allow automatic position
         </span>
       </div>
     </div>
