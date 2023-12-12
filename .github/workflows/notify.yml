@@ -1,0 +1,15 @@
+name: Notify
+on:
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    name: Notify via Telegram
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send message to Telegram
+        uses: Lukasss93/telegram-action@v2
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}

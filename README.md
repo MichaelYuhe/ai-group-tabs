@@ -1,11 +1,9 @@
 # AI Group Tabs
 
-[![Build](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml)
+[![Build](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml) [![Notify](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/notify.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/notify.yml)
 
 A Chrome extension helps you group your tabs with AI.
 
-> The extension is still under development, feel free to open issues and pull requests. Any suggestions are welcome.
->
 > [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/+99v98-XOQY0zZGNl)
 
 Demo Video:
@@ -53,3 +51,33 @@ pnpm build
 > Everyone contributor can get your one month free of Developer Plan on Zeabur.
 
 [![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com?referralCode=MichaelYuhe&utm_source=ai-group-tab&utm_campaign=oss)
+
+## Star History
+<div align="left">
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="
+      https://api.star-history.com/svg?repos=MichaelYuhe/ai-group-tabs&type=Date&theme=dark
+    "
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="
+      https://api.star-history.com/svg?repos=MichaelYuhe/ai-group-tabs&type=Date
+    "
+  />
+  <img
+    alt="Star History Chart"
+    src="https://api.star-history.com/svg?repos=MichaelYuhe/ai-group-tabs&type=Date"
+  />
+</picture>
+</div>
+
+
+## Contributors
+
+<p align="left">
+<a href="https://github.com/MichaelYuhe/ai-group-tabs/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=MichaelYuhe/ai-group-tabs" style="width: 60%"/>
+</a></p>
