@@ -1,17 +1,21 @@
 import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./options.css";
-import { getStorage, setStorage } from "./utils";
+import { DEFAULT_PROMPT, getStorage, setStorage } from "./utils";
 
 const Options = () => {
   const [model, setModel] = useState<string | undefined>("gpt-3.5-turbo");
   const [apiURL, setApiURL] = useState<string | undefined>(
     "https://api.openai.com/v1/chat/completions"
   );
+  const [prompt, setPrompt] = useState<string | undefined>(DEFAULT_PROMPT);
+  const [isPromptValid, setIsPromptValid] = useState<boolean>(true);
+  const promptFormatWarning: string = `{{tabURL}}, {{tabTitle}} and {{types}} must be in the prompt`;
 
   useEffect(() => {
     getStorage<string>("model").then(setModel);
     getStorage<string>("apiURL").then(setApiURL);
+    getStorage<string>("prompt").then(setPrompt);
   }, []);
 
   const updateModel = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
@@ -22,6 +26,19 @@ const Options = () => {
   const updateApiURL = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setApiURL(e.target.value);
     setStorage("apiURL", e.target.value);
+  }, []);
+
+  const updatePrompt = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
+    const newPrompt: string = e.target.value;
+    setIsPromptValid(
+      /{{tabURL}}/.test(newPrompt) &&
+        /{{tabTitle}}/.test(newPrompt) &&
+        /{{types}}/.test(newPrompt)
+    );
+    if (isPromptValid) {
+      setPrompt(newPrompt);
+      setStorage("prompt", newPrompt);
+    }
   }, []);
 
   return (
@@ -62,6 +79,38 @@ const Options = () => {
             value={apiURL}
             onChange={updateApiURL}
             id="api_url"
+          />
+        </div>
+
+        <div className="flex flex-col gap-y-2">
+          <label htmlFor="prompt" className="text-xl font-medium">
+            Prompt
+          </label>
+          {isPromptValid && (
+            <label
+              htmlFor="prompt"
+              className="text-sm font-normal w-64 text-blue-500"
+            >
+              {promptFormatWarning}
+            </label>
+          )}
+
+          {!isPromptValid && (
+            <div
+              className=" w-64 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+              role="alert"
+            >
+              {/* <strong className="font-bold">Holy smokes!</strong> */}
+              <span className="block sm:inline">{promptFormatWarning}</span>
+            </div>
+          )}
+
+          <textarea
+            className="bg-gray-50 border w-64 h-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+          focus:ring-blue-500 focus:border-blue-500 block"
+            value={prompt}
+            onChange={updatePrompt}
+            id="prompt"
           />
         </div>
       </div>

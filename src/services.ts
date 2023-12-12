@@ -1,16 +1,32 @@
-import { getStorage } from "./utils";
+import Mustache from "mustache";
+import { DEFAULT_PROMPT, getStorage } from "./utils";
 
 interface TabGroup {
   type: string;
   tabIds: (number | undefined)[];
 }
 
+interface TabInfo {
+  id: number | undefined;
+  title: string | undefined;
+  url: string | undefined;
+}
+
+const renderPrompt = async (tab: TabInfo, types: string[]): Promise<string> => {
+  const prompt: string = (await getStorage("prompt")) || DEFAULT_PROMPT;
+  return Mustache.render(prompt, {
+    tabURL: tab.url,
+    tabTitle: tab.title,
+    types: types.join(", "),
+  });
+};
+
 export async function batchGroupTabs(
   tabs: chrome.tabs.Tab[],
   types: string[],
   openAIKey: string
 ) {
-  const tabInfoList = tabs.map((tab) => {
+  const tabInfoList: TabInfo[] = tabs.map((tab) => {
     return {
       id: tab.id,
       title: tab.title,
@@ -32,8 +48,8 @@ export async function batchGroupTabs(
 
   try {
     await Promise.all(
-      tabInfoList.map(async (tab) => {
-        if (!tab.url) return;
+      tabInfoList.map(async (tabInfo) => {
+        if (!tabInfo.url) return;
         const response = await fetch(apiURL, {
           method: "POST",
           headers: {
@@ -49,11 +65,7 @@ export async function batchGroupTabs(
               },
               {
                 role: "user",
-                content: `Based on the URL: "${tab.url}" and title: "${
-                  tab.title
-                }", classify the browser tab type as one of the following: ${types.join(
-                  ", "
-                )}. Respond with only the classification keyword from the list.`,
+                content: await renderPrompt(tabInfo, types),
               },
             ],
             model,
@@ -65,7 +77,7 @@ export async function batchGroupTabs(
 
         const index = types.indexOf(type);
         if (index === -1) return;
-        result[index].tabIds.push(tab.id);
+        result[index].tabIds.push(tabInfo.id);
       })
     );
     return result;
@@ -81,6 +93,7 @@ export async function handleOneTab(
   openAIKey: string
 ) {
   try {
+    const tabInfo: TabInfo = { id: tab.id, title: tab.title, url: tab.url };
     const model = (await getStorage("model")) || "gpt-3.5-turbo";
     const apiURL =
       (await getStorage("apiURL")) ||
@@ -101,11 +114,7 @@ export async function handleOneTab(
           },
           {
             role: "user",
-            content: `Based on the URL: "${tab.url}" and title: "${
-              tab.title
-            }", classify the browser tab type as one of the following: ${types.join(
-              ", "
-            )}. Respond with only the classification keyword from the list.`,
+            content: await renderPrompt(tabInfo, types),
           },
         ],
         model,
