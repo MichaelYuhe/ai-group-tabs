@@ -42,9 +42,28 @@ chrome.tabGroups.onUpdated.addListener((group) => {
 async function groupOneType(type: string, tabIds: number[]) {
   if (tabIds.length === 0) return;
 
-  chrome.tabs.group({ tabIds }, async (groupId) => {
-    await chrome.tabGroups.update(groupId, { title: type });
-  });
+  const windowIdMap: { [key: number]: number[] } = {};
+
+  const getTab = (tabId: number) =>
+    new Promise((resolve) => {
+      chrome.tabs.get(tabId, (tab) => {
+        if (!windowIdMap[tab.windowId]) {
+          windowIdMap[tab.windowId] = [tabId];
+        } else {
+          windowIdMap[tab.windowId].push(tabId);
+        }
+        resolve(tab);
+      });
+    });
+
+  await Promise.all(tabIds.map((tabId) => getTab(tabId)));
+
+  for (const windowId in windowIdMap) {
+    const tabsForWindow = windowIdMap[windowId];
+    chrome.tabs.group({ tabIds: tabsForWindow }, async (groupId) => {
+      await chrome.tabGroups.update(groupId, { title: type });
+    });
+  }
 }
 
 async function createGroupWithTitle(tabId: number, title: string) {
