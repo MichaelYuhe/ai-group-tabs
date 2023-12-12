@@ -21,6 +21,7 @@ const Popup = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [color, setColor] = useState<string>("grey");
   const [colors, setColors] = useState<string[]>([]);
+  const colorsRef = useRef<HTMLElement[]>([]);
 
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
@@ -182,9 +183,46 @@ const Popup = () => {
               }}
             />
             <div
-              className={`bg-${colors[idx]}-500 w-4 h-4 rounded-full`}
-              style={{ backgroundColor: colors[idx], flexShrink: 0 }}
+              ref={(node) => {
+                colorsRef.current[idx] = node;
+              }}
+              className={`bg-${colors[idx]}-500 w-4 h-4`}
+              style={{
+                backgroundColor: colors[idx],
+                flexShrink: 0,
+              }}
             ></div>
+            <svg
+              t="1702386306969"
+              class="icon"
+              viewBox="0 0 1024 1024"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              p-id="1448"
+              width="16"
+              height="16"
+              onClick={(e) => {
+                let nextIdx =
+                  (DEFAULT_COLOR.indexOf(colors[idx]) + 1) %
+                  DEFAULT_COLOR.length;
+                const newColors = [...colors];
+                newColors[idx] = DEFAULT_COLOR[nextIdx];
+                colorsRef.current[idx].animate(
+                  [{ opacity: "0" }, { opacity: "1" }],
+                  {
+                    duration: 400,
+                  }
+                );
+                setColors(newColors);
+                setStorage<string[]>("colors", newColors);
+              }}
+            >
+              <path
+                d="M312.888889 995.555556c-17.066667 0-28.444444-5.688889-39.822222-17.066667-22.755556-22.755556-17.066667-56.888889 5.688889-79.644445l364.088888-329.955555c11.377778-11.377778 17.066667-22.755556 17.066667-34.133333 0-11.377778-5.688889-22.755556-17.066667-34.133334L273.066667 187.733333c-22.755556-22.755556-28.444444-56.888889-5.688889-79.644444 22.755556-22.755556 56.888889-28.444444 79.644444-5.688889l364.088889 312.888889c34.133333 28.444444 56.888889 73.955556 56.888889 119.466667s-17.066667 85.333333-51.2 119.466666l-364.088889 329.955556c-11.377778 5.688889-28.444444 11.377778-39.822222 11.377778z"
+                fill="#999999"
+                p-id="1449"
+              ></path>
+            </svg>
             <button
               onClick={() => {
                 const newTypes = [...types];
@@ -197,6 +235,7 @@ const Popup = () => {
                 setStorage<string[]>("types", newTypes);
                 setStorage<string[]>("colors", newColors);
               }}
+              style={{ userSelect: "none" }}
             >
               Delete
             </button>
