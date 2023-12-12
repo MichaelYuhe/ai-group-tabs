@@ -1,10 +1,11 @@
 import { handleOneTab } from "./services";
-import { DEFAULT_GROUP, getStorage, setStorage } from "./utils";
+import { DEFAULT_GROUP, DEFAULT_PROMPT, getStorage, setStorage } from "./utils";
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
     setStorage<boolean>("isOn", true);
     setStorage<string[]>("types", DEFAULT_GROUP);
+    setStorage<string>("prompt", DEFAULT_PROMPT);
   }
 });
 
@@ -94,10 +95,7 @@ async function processTabAndGroup(tab: chrome.tabs.Tab, types: any) {
 }
 
 async function handleNewTab(tab: chrome.tabs.Tab) {
-  let enable = await getStorage<boolean>("isOn");
-  if (enable === undefined) {
-    enable = true;
-  }
+  const enable = await getStorage<boolean>("isOn");
   const window = await chrome.windows.get(tab.windowId);
   if (
     !enable ||
@@ -121,10 +119,7 @@ async function handleTabUpdate(
   changeInfo: chrome.tabs.TabChangeInfo,
   tab: chrome.tabs.Tab
 ) {
-  let enable = await getStorage<boolean>("isOn");
-  if (enable === undefined) {
-    enable = true;
-  }
+  const enable = await getStorage<boolean>("isOn");
   const window = await chrome.windows.get(tab.windowId);
   if (
     !enable ||
