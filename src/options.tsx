@@ -2,6 +2,8 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./options.css";
 import { DEFAULT_PROMPT, getStorage, setStorage } from "./utils";
+import FilterRules from "./components/FilterRules";
+import { FilterRuleItem } from "./types";
 
 const Options = () => {
   const [model, setModel] = useState<string | undefined>("gpt-3.5-turbo");
@@ -10,12 +12,16 @@ const Options = () => {
   );
   const [prompt, setPrompt] = useState<string | undefined>(DEFAULT_PROMPT);
   const [isPromptValid, setIsPromptValid] = useState<boolean>(true);
+  const [filterRules, setFilterRules] = useState<FilterRuleItem[] | undefined>([
+    { id: 0, type: "DOMAIN", rule: "" },
+  ]);
   const promptFormatWarning: string = `{{tabURL}}, {{tabTitle}} and {{types}} must be in the prompt`;
 
   useEffect(() => {
     getStorage<string>("model").then(setModel);
     getStorage<string>("apiURL").then(setApiURL);
     getStorage<string>("prompt").then(setPrompt);
+    getStorage<FilterRuleItem[]>("filterRules").then(setFilterRules);
   }, []);
 
   const updateModel = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
@@ -26,6 +32,11 @@ const Options = () => {
   const updateApiURL = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setApiURL(e.target.value);
     setStorage("apiURL", e.target.value);
+  }, []);
+
+  const updateFilterRules = useCallback((rules: FilterRuleItem[]) => {
+    setFilterRules(rules);
+    setStorage("filterRules", rules);
   }, []);
 
   const updatePrompt = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -57,7 +68,7 @@ const Options = () => {
             value={model}
             onChange={updateModel}
             id="models"
-            className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+            className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
           focus:ring-blue-500 focus:border-blue-500 block"
           >
             <option selected>Choose a model</option>
@@ -74,7 +85,7 @@ const Options = () => {
           </label>
 
           <input
-            className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+            className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
           focus:ring-blue-500 focus:border-blue-500 block"
             value={apiURL}
             onChange={updateApiURL}
@@ -105,11 +116,21 @@ const Options = () => {
           )}
 
           <textarea
-            className="bg-gray-50 border w-64 h-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+            className="bg-gray-50 border w-64 h-64 border-gray-300 text-gray-900 text-sm rounded-lg
           focus:ring-blue-500 focus:border-blue-500 block"
             value={prompt}
             onChange={updatePrompt}
             id="prompt"
+          />
+        </div>
+        <div className="flex flex-col gap-y-2">
+          <label htmlFor="api_url" className="text-xl font-medium">
+            Filter Rule
+          </label>
+
+          <FilterRules
+            updateFilterRules={updateFilterRules}
+            filterRules={filterRules || []}
           />
         </div>
       </div>

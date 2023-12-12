@@ -97,7 +97,7 @@ async function processTabAndGroup(tab: chrome.tabs.Tab, types: any) {
   if (!openAIKey) return;
 
   const type = await handleOneTab(tab, types, openAIKey);
-
+  if (!type) return;
   // Get or create proper tabMap for the window
   if (!windowGroupMaps.hasOwnProperty(tab.windowId)) {
     windowGroupMaps[tab.windowId] = new Map();

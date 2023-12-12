@@ -1,5 +1,6 @@
 import Mustache from "mustache";
-import { DEFAULT_PROMPT, getStorage } from "./utils";
+import { DEFAULT_PROMPT, getStorage, matchesRule } from "./utils";
+import { FilterRuleItem } from "./types";
 
 interface TabGroup {
   type: string;
@@ -21,18 +22,29 @@ const renderPrompt = async (tab: TabInfo, types: string[]): Promise<string> => {
   });
 };
 
+const filterTabInfo = (tabInfo: TabInfo, filterRules: FilterRuleItem[]) => {
+  if (!filterRules || !filterRules?.length) return true;
+  const url = new URL(tabInfo.url ?? "");
+  return !filterRules.some((rule) => {
+    return matchesRule(url.host, rule);
+  });
+};
+
 export async function batchGroupTabs(
   tabs: chrome.tabs.Tab[],
   types: string[],
   openAIKey: string
 ) {
-  const tabInfoList: TabInfo[] = tabs.map((tab) => {
-    return {
-      id: tab.id,
-      title: tab.title,
-      url: tab.url,
-    };
-  });
+  const filterRules = (await getStorage<FilterRuleItem[]>("filterRules")) || [];
+  const tabInfoList: TabInfo[] = tabs
+    .map((tab) => {
+      return {
+        id: tab.id,
+        title: tab.title,
+        url: tab.url,
+      };
+    })
+    .filter((tab) => filterTabInfo(tab, filterRules));
 
   const result: TabGroup[] = types.map((type) => {
     return {
@@ -98,6 +110,11 @@ export async function handleOneTab(
     const apiURL =
       (await getStorage("apiURL")) ||
       "https://api.openai.com/v1/chat/completions";
+
+    const filterRules =
+      (await getStorage<FilterRuleItem[]>("filterRules")) || [];
+    const shouldFilter = !filterTabInfo(tabInfo, filterRules);
+    if (shouldFilter) return;
 
     const response = await fetch(apiURL, {
       method: "POST",
