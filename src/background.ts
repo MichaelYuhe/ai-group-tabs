@@ -87,7 +87,10 @@ async function processTabAndGroup(tab: chrome.tabs.Tab, types: any) {
 }
 
 async function handleNewTab(tab: chrome.tabs.Tab) {
-  const enable = await getStorage<boolean>("isOn");
+  let enable = await getStorage<boolean>("isOn");
+  if (enable === undefined) {
+    enable = true;
+  }
   const window = await chrome.windows.get(tab.windowId);
   if (
     !enable ||
@@ -111,7 +114,10 @@ async function handleTabUpdate(
   changeInfo: chrome.tabs.TabChangeInfo,
   tab: chrome.tabs.Tab
 ) {
-  const enable = await getStorage<boolean>("isOn");
+  let enable = await getStorage<boolean>("isOn");
+  if (enable === undefined) {
+    enable = true;
+  }
   const window = await chrome.windows.get(tab.windowId);
   if (
     !enable ||
