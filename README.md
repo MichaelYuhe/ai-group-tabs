@@ -1,6 +1,6 @@
 # AI Group Tabs
 
-[![Build](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml)
+[![Build](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml) [![Notify](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/notify.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/notify.yml)
 
 A Chrome extension helps you group your tabs with AI.
 
@@ -19,7 +19,7 @@ Demo Video:
 - [ ] Publish on Chrome store
 - [x] Better prompt engineering
 - [x] Logo and name
-- [ ] CI / CD for build and release new version
+- [x] CI / CD for build and release new version
 - [ ] Add toast
 - [x] Use Vite and pnpm
 - [x] Group the updated tab only when a tab is updated
@@ -53,6 +53,7 @@ pnpm build
 [![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com?referralCode=MichaelYuhe&utm_source=ai-group-tab&utm_campaign=oss)
 
 ## Star History
+
 <div align="left">
 <picture>
   <source
@@ -73,7 +74,6 @@ pnpm build
   />
 </picture>
 </div>
-
 
 ## Contributors
 

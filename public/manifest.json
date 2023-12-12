@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "AI Group Tabs",
   "description": "Group your tabs with AI",
-  "version": "1.0",
+  "version": "1.0.1",
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
@@ -20,6 +20,11 @@
   "background": {
     "type": "module",
     "service_worker": "service_worker.js"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
   },
   "permissions": ["storage", "tabs", "tabGroups"],
   "host_permissions": ["<all_urls>"]

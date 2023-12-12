@@ -42,3 +42,7 @@ export const DEFAULT_COLOR = [
   "cyan",
   "orange",
 ];
+export const DEFAULT_PROMPT: string =
+  `Based on the URL: "{{tabURL}}" and title: "{{tabTitle}}", ` +
+  `classify the browser tab type as one of the following: "{{types}}". ` +
+  `Respond with only the classification keyword from the list.`;

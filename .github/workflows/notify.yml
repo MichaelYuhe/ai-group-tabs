@@ -11,5 +11,5 @@ jobs:
       - name: Send message to Telegram
         uses: Lukasss93/telegram-action@v2
         env:
-          TELEGRAM_TOKEN: ${{ secrets.telegram_token }}
-          TELEGRAM_CHAT: ${{ secrets.telegram_chat }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
