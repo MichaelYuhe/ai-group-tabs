@@ -27,5 +27,8 @@
     "128": "icon.png"
   },
   "permissions": ["storage", "tabs", "tabGroups"],
-  "host_permissions": ["<all_urls>"]
+  "host_permissions": ["<all_urls>"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'"
+  }
 }
