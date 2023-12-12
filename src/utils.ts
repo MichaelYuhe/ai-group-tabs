@@ -39,11 +39,11 @@ export const DEFAULT_PROMPT: string =
   `Respond with only the classification keyword from the list.`;
 
 export function matchesRule(url: URL, rule: FilterRuleItem) {
-  const host = url.host;
   const { type, rule: value } = rule;
   if (!value) {
     return false;
   }
+  const host = url.host;
   switch (type) {
     case "DOMAIN":
       // Exact match; example.com should match example.com

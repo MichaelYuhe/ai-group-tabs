@@ -77,10 +77,19 @@ function BasicSettings() {
           id="api_url"
         />
       </div>
+
       <div className="flex flex-col gap-y-2">
         <label htmlFor="api_url" className="text-xl font-medium">
           Filter Rule
         </label>
+
+        <div>
+          <label htmlFor="api_url" className="text-sm font-normal w-64">
+            Filter rules will be applied before sending to the API. For example,
+            if you add a filtering rule for "google.com", google.com will not be
+            grouped.
+          </label>
+        </div>
 
         <FilterRules
           updateFilterRules={updateFilterRules}

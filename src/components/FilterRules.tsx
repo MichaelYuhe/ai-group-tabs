@@ -2,19 +2,19 @@ import { RuleType, FilterRuleItem } from "../types";
 
 const ruleTypes: { label: string; value: RuleType }[] = [
   {
-    label: "DOMAIN",
+    label: "Domain",
     value: "DOMAIN",
   },
   {
-    label: "DOMAIN-SUFFIX",
+    label: "Domain suffix",
     value: "DOMAIN-SUFFIX",
   },
   {
-    label: "DOMAIN-KEYWORD",
+    label: "Domain keyword",
     value: "DOMAIN-KEYWORD",
   },
   {
-    label: "REGEX",
+    label: "Regex",
     value: "REGEX",
   },
 ];
@@ -102,17 +102,17 @@ const FilterRules = ({ filterRules, updateFilterRules }: FilterRulesProps) => {
   return (
     <div>
       <div>
-        <div>- DOMAIN: Exact match; example.com should match example.com</div>
+        <div>- Domain: Exact match; example.com should match example.com</div>
         <div>
-          - DOMAIN-SUFFIX: Suffix matching; example.com should match
+          - Domain suffix: Suffix matching; example.com should match
           www.example.com
         </div>
         <div>
-          - DOMAIN-KEYWORD: Keyword matching; example should match
+          - Domain keyword: Keyword matching; example should match
           www.example.com
         </div>
         <div>
-          - REGEX: Regular expression matching; https?://mail.google.com/*
+          - Regex: Regular expression matching; https?://mail.google.com/*
           should match https://mail.google.com/mail/u/0/#inbox
         </div>
       </div>
