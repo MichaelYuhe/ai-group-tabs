@@ -9,6 +9,4 @@ import { getStorage } from "./utils";
 
   const ele = document.createElement("div");
   document.body.appendChild(ele);
-
-  createRoot(ele).render(<div />);
 })();
