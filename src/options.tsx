@@ -127,7 +127,7 @@ function PromptSettings() {
     <div className="flex flex-col gap-y-8 p-4">
       <div className="flex flex-col gap-y-2">
         <label htmlFor="prompt" className="text-xl font-medium">
-          System Prompt
+          Prompt
         </label>
         {isPromptValid && (
           <label
