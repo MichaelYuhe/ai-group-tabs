@@ -16,7 +16,7 @@ Demo Video:
 - [x] Fill OpenAI API key in popup and save in Chrome storage
 - [x] Customize categories in popup
 - [x] Group new tabs automatically
-- [ ] Publish on Chrome store
+- [x] Publish on Chrome store
 - [x] Better prompt engineering
 - [x] Logo and name
 - [x] CI / CD for build and release new version
@@ -26,6 +26,12 @@ Demo Video:
 - [x] Custom model and API server
 
 ## Download and Start Using
+
+### Download from Chrome Web Store
+
+https://chromewebstore.google.com/detail/ai-group-tabs/hihpejmkeabgeockcemeikfkkbdofhji
+
+### Download from source
 
 Download the latest released `dist.zip` from [the release page](https://github.com/MichaelYuhe/ai-group-tabs/releases), unzip after download, you will get a folder named `dist`.
 
