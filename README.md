@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml) [![Notify](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/notify.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/notify.yml)
 
-A Chrome extension helps you group your tabs with AI.
+A Chrome extension helps organize and group your Chrome tabs with AI
 
 > [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/+99v98-XOQY0zZGNl)
 
