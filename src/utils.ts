@@ -33,17 +33,18 @@ export const DEFAULT_GROUP = [
   "Utilities",
 ];
 
-export const DEFAULT_COLOR = [
-  "grey",
-  "blue",
-  "red",
-  "yellow",
-  "green",
-  "pink",
-  "purple",
-  "cyan",
-  "orange",
-];
+export enum Color {
+  grey = "grey",
+  blue = "blue",
+  red = "red",
+  yellow = "yellow",
+  green = "green",
+  pink = "pink",
+  purple = "purple",
+  cyan = "cyan",
+  orange = "orange",
+}
+
 export const DEFAULT_PROMPT: string =
   `Based on the URL: "{{tabURL}}" and title: "{{tabTitle}}", ` +
   `classify the browser tab type as one of the following: "{{types}}". ` +
