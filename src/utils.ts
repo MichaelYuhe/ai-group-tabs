@@ -34,9 +34,9 @@ export const DEFAULT_GROUP = [
 ];
 
 export const DEFAULT_PROMPT: string =
-  `Based on the URL: "{{tabURL}}" and title: "{{tabTitle}}", ` +
-  `classify the browser tab type as one of the following: "{{types}}". ` +
-  `Respond with only the classification keyword from the list.`;
+  `You are a brwoser tab group classificator, ` +
+  `classify the tab group base on the provided URL and title into one of the categories: ` +
+  `[{{types}}], response with the category only, without any comments.`;
 
 export function matchesRule(url: URL, rule: FilterRuleItem) {
   const { type, rule: value } = rule;

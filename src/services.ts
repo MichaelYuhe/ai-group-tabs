@@ -13,13 +13,25 @@ interface TabInfo {
   url: string | undefined;
 }
 
-const renderPrompt = async (tab: TabInfo, types: string[]): Promise<string> => {
+const renderPrompt = async (
+  tab: TabInfo,
+  types: string[]
+): Promise<
+  [{ role: string; content: string }, { role: string; content: string }]
+> => {
   const prompt: string = (await getStorage("prompt")) || DEFAULT_PROMPT;
-  return Mustache.render(prompt, {
-    tabURL: tab.url,
-    tabTitle: tab.title,
-    types: types.join(", "),
-  });
+  return [
+    {
+      role: "system",
+      content: Mustache.render(prompt, {
+        types: types.join(", "),
+      }),
+    },
+    {
+      role: "user",
+      content: `tab url: ${tab.url}, title: ${tab.title}`,
+    },
+  ];
 };
 
 const filterTabInfo = (tabInfo: TabInfo, filterRules: FilterRuleItem[]) => {
@@ -70,16 +82,7 @@ export async function batchGroupTabs(
             "Api-Key": openAIKey,
           },
           body: JSON.stringify({
-            messages: [
-              {
-                role: "system",
-                content: "You are a classificator",
-              },
-              {
-                role: "user",
-                content: await renderPrompt(tabInfo, types),
-              },
-            ],
+            messages: await renderPrompt(tabInfo, types),
             model,
           }),
         });
@@ -124,16 +127,7 @@ export async function handleOneTab(
         "Api-Key": openAIKey,
       },
       body: JSON.stringify({
-        messages: [
-          {
-            role: "system",
-            content: "You are a classificator",
-          },
-          {
-            role: "user",
-            content: await renderPrompt(tabInfo, types),
-          },
-        ],
+        messages: await renderPrompt(tabInfo, types),
         model,
       }),
     });
