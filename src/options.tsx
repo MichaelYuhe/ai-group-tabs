@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import "./options.css";
 import { DEFAULT_PROMPT, getStorage, setStorage } from "./utils";
 import Switch from "./components/Switch";
+import FilterRules from "./components/FilterRules";
+import { FilterRuleItem } from "./types";
 
 const TABS = [
   "Basic Settings",
@@ -16,10 +18,13 @@ function BasicSettings() {
   const [apiURL, setApiURL] = useState<string | undefined>(
     "https://api.openai.com/v1/chat/completions"
   );
-
+  const [filterRules, setFilterRules] = useState<FilterRuleItem[] | undefined>([
+    { id: 0, type: "DOMAIN", rule: "" },
+  ]);
   useEffect(() => {
     getStorage<string>("model").then(setModel);
     getStorage<string>("apiURL").then(setApiURL);
+    getStorage<FilterRuleItem[]>("filterRules").then(setFilterRules);
   }, []);
 
   const updateModel = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
@@ -30,6 +35,11 @@ function BasicSettings() {
   const updateApiURL = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setApiURL(e.target.value);
     setStorage("apiURL", e.target.value);
+  }, []);
+
+  const updateFilterRules = useCallback((rules: FilterRuleItem[]) => {
+    setFilterRules(rules);
+    setStorage("filterRules", rules);
   }, []);
 
   return (
@@ -43,7 +53,7 @@ function BasicSettings() {
           value={model}
           onChange={updateModel}
           id="models"
-          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
               focus:ring-blue-500 focus:border-blue-500 block"
         >
           <option selected>Choose a model</option>
@@ -60,11 +70,30 @@ function BasicSettings() {
         </label>
 
         <input
-          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
               focus:ring-blue-500 focus:border-blue-500 block"
           value={apiURL}
           onChange={updateApiURL}
           id="api_url"
+        />
+      </div>
+
+      <div className="flex flex-col gap-y-2">
+        <label htmlFor="api_url" className="text-xl font-medium">
+          Filter Rule
+        </label>
+
+        <div>
+          <label htmlFor="api_url" className="text-sm font-normal w-64">
+            Filter rules will be applied before sending to the API. For example,
+            if you add a filtering rule for "google.com", google.com will not be
+            grouped.
+          </label>
+        </div>
+
+        <FilterRules
+          updateFilterRules={updateFilterRules}
+          filterRules={filterRules || []}
         />
       </div>
     </div>
@@ -119,7 +148,7 @@ function PromptSettings() {
         )}
 
         <textarea
-          className="bg-gray-50 border w-64 h-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+          className="bg-gray-50 border w-64 h-64 border-gray-300 text-gray-900 text-sm rounded-lg
           focus:ring-blue-500 focus:border-blue-500 block"
           value={prompt}
           onChange={updatePrompt}
