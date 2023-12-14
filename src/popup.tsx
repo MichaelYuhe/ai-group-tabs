@@ -64,7 +64,7 @@ const Popup = () => {
   };
 
   const enableAutoPosition = () => {
-    setIsAutoPosition((isAutoGroupPosition) => {
+    setIsAutoPosition(() => {
       setStorage("isAutoPosition", !isAutoPosition);
       return !isAutoPosition;
     });
@@ -139,8 +139,8 @@ const Popup = () => {
 
             <button
               disabled={!newType}
-              className="rounded-md w-fit bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
-            text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 
+              className="rounded-md w-fit bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
+            text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2
             focus-visible:outline-offset-2 disabled:bg-primary/sm"
             >
               Add
@@ -177,7 +177,7 @@ const Popup = () => {
       <div className="flex items-center gap-x-4">
         <button
           disabled={!openAIKey || !types || !types.length}
-          className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
+          className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
         text-white shadow-sm hover:bg-primary focus-visible:outline cursor-pointer
         focus-visible:outline-2 focus-visible:outline-offset-2"
           onClick={getAllTabsInfo}
@@ -187,7 +187,7 @@ const Popup = () => {
         </button>
 
         <button
-          className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
+          className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
         text-white shadow-sm hover:bg-primary focus-visible:outline cursor-pointer
         focus-visible:outline-2 focus-visible:outline-offset-2"
           onClick={ungroup}

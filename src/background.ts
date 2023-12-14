@@ -20,7 +20,7 @@ chrome.storage.local.get("types", (result) => {
 
 const windowGroupMaps: { [key: number]: Map<string, number> } = {};
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message) => {
   chrome.storage.local.get("types", (resultStorage) => {
     if (resultStorage.types) {
       types = resultStorage.types;
@@ -159,7 +159,7 @@ async function handleNewTab(tab: chrome.tabs.Tab) {
 }
 
 async function handleTabUpdate(
-  tabId: number,
+  _tabId: number,
   changeInfo: chrome.tabs.TabChangeInfo,
   tab: chrome.tabs.Tab
 ) {
@@ -185,7 +185,7 @@ async function handleTabUpdate(
 
 chrome.tabs.onCreated.addListener(handleNewTab);
 chrome.tabs.onUpdated.addListener(handleTabUpdate);
-chrome.tabs.onDetached.addListener((tabId, detachInfo) => {
+chrome.tabs.onDetached.addListener((_tabId, detachInfo) => {
   const windowId = detachInfo.oldWindowId;
   if (
     windowGroupMaps.hasOwnProperty(windowId) &&
