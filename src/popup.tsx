@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { batchGroupTabs } from "./services";
@@ -26,7 +20,6 @@ const Popup = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [color, setColor] = useState<string>("grey");
   const [colors, setColors] = useState<string[]>([]);
-  const colorsRef = useRef<HTMLElement[]>([]);
   const [colorsEnabled, setColorsEnabled] = useState<boolean>(false);
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
@@ -181,10 +174,12 @@ const Popup = () => {
                 type="radio"
                 name="color"
                 className={`w-4 h-4 rounded-full border-transparent checked:bg-transparent checked:ring-2 checked:ring-offset-2 focus:outline-none checked:bg-none`}
-                style={{
-                  backgroundColor: colorOption,
-                  ["--tw-ring-color"]: colorOption,
-                }}
+                style={
+                  {
+                    backgroundColor: colorOption,
+                    "--tw-ring-color": colorOption,
+                  } as React.CSSProperties
+                }
                 checked={color === colorOption}
                 value={colorOption}
                 onChange={(e) => {
@@ -209,9 +204,6 @@ const Popup = () => {
             {colorsEnabled && (
               <>
                 <div
-                  ref={(node) => {
-                    colorsRef.current[idx] = node;
-                  }}
                   className={`w-4 h-4 flex-shrink-0 transition-colors ease-out-in`}
                   style={{
                     backgroundColor: colors[idx],
@@ -220,7 +212,7 @@ const Popup = () => {
                 <img
                   src="arrow_right.png"
                   alt=""
-                  onClick={(e) => {
+                  onClick={() => {
                     const nextIdx =
                       (DEFAULT_COLOR.indexOf(colors[idx]) + 1) %
                       DEFAULT_COLOR.length;

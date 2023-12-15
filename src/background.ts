@@ -1,5 +1,6 @@
 import { handleOneTab } from "./services";
 import {
+  Color,
   DEFAULT_GROUP,
   DEFAULT_PROMPT,
   getRootDomain,
@@ -17,7 +18,7 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 let types: string[] = [];
-let colors: string[] = [];
+let colors: Color[] = [];
 
 chrome.storage.local.get("types", (result) => {
   if (result.types) {
@@ -72,7 +73,7 @@ chrome.tabGroups.onUpdated.addListener((group) => {
   }
 });
 
-async function groupOneType(type: string, tabIds: number[], color: string) {
+async function groupOneType(type: string, tabIds: number[], color: Color) {
   const windowIdMap: { [key: number]: number[] } = {};
 
   const getTab = (tabId: number) =>
