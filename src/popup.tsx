@@ -6,6 +6,7 @@ import { DEFAULT_GROUP, getStorage, setStorage } from "./utils";
 
 import "./popup.css";
 import Input from "./components/Input";
+import Switch from "./components/Switch";
 
 const Popup = () => {
   const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
@@ -196,39 +197,17 @@ const Popup = () => {
         </button>
       </div>
 
-      <div className="flex items-center mt-2">
-        <label className="relative inline-flex cursor-pointer items-center">
-          <input
-            id="switch"
-            type="checkbox"
-            checked={isOn}
-            className="peer sr-only"
-            onClick={disableGrouping}
-          />
-          <label htmlFor="switch" className="hidden"></label>
-          <div className="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
-        </label>
-        <span className="ml-3 text-gray-900 text-sm">
-          Allow automatic grouping
-        </span>
-      </div>
+      <Switch
+        isChecked={!!isOn}
+        text="Allow automatic grouping"
+        onChange={disableGrouping}
+      />
 
-      <div className="flex items-center mt-2">
-        <label className="relative inline-flex cursor-pointer items-center">
-          <input
-            id="autoPosition"
-            type="checkbox"
-            checked={isAutoPosition}
-            className="peer sr-only"
-            onClick={enableAutoPosition}
-          />
-          <label htmlFor="autoPosition" className="hidden"></label>
-          <div className="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
-        </label>
-        <span className="ml-3 text-gray-900 text-sm">
-          Allow automatic position
-        </span>
-      </div>
+      <Switch
+        isChecked={!!isAutoPosition}
+        text="Allow automatic position"
+        onChange={enableAutoPosition}
+      />
     </div>
   );
 };
