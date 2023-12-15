@@ -1,8 +1,6 @@
 # AI Group Tabs
 
-[![Build](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/build.yml) [![Notify](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/notify.yml/badge.svg)](https://github.com/MichaelYuhe/ai-group-tabs/actions/workflows/notify.yml)
-
-A Chrome extension helps you group your tabs with AI.
+A Chrome extension helps organize and group your Chrome tabs with AI
 
 > [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/+99v98-XOQY0zZGNl)
 
@@ -52,11 +50,17 @@ pnpm dev
 pnpm build
 ```
 
-## Sponsor
+## Special Thanks
 
 > Everyone contributor can get your one month free of Developer Plan on Zeabur.
 
 [![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com?referralCode=MichaelYuhe&utm_source=ai-group-tab&utm_campaign=oss)
+
+## Sponsor
+
+> This extension is free forever, if you love this extension, you can buy me a coffee here :D
+
+<a href="https://www.buymeacoffee.com/MichaelYuhe" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 ## Star History
 

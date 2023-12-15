@@ -11,6 +11,7 @@ import { batchGroupTabs } from "./services";
 import { Color, DEFAULT_GROUP, getStorage, setStorage } from "./utils";
 import "./popup.css";
 import Input from "./components/Input";
+import Switch from "./components/Switch";
 
 const DEFAULT_COLOR = Object.keys(Color);
 
@@ -80,7 +81,7 @@ const Popup = () => {
   };
 
   const enableAutoPosition = () => {
-    setIsAutoPosition((isAutoGroupPosition) => {
+    setIsAutoPosition(() => {
       setStorage("isAutoPosition", !isAutoPosition);
       return !isAutoPosition;
     });
@@ -164,8 +165,8 @@ const Popup = () => {
             />
             <button
               disabled={!newType}
-              className="rounded-md w-fit bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
-            text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 
+              className="rounded-md w-fit bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
+            text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2
             focus-visible:outline-offset-2 disabled:bg-primary/sm"
             >
               Add
@@ -261,7 +262,7 @@ const Popup = () => {
       <div className="flex items-center gap-x-4">
         <button
           disabled={!openAIKey || !types || !types.length}
-          className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
+          className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
         text-white shadow-sm hover:bg-primary focus-visible:outline cursor-pointer
         focus-visible:outline-2 focus-visible:outline-offset-2"
           onClick={getAllTabsInfo}
@@ -271,7 +272,7 @@ const Popup = () => {
         </button>
 
         <button
-          className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold 
+          className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
         text-white shadow-sm hover:bg-primary focus-visible:outline cursor-pointer
         focus-visible:outline-2 focus-visible:outline-offset-2"
           onClick={ungroup}
@@ -280,39 +281,17 @@ const Popup = () => {
         </button>
       </div>
 
-      <div className="flex items-center mt-2">
-        <label className="relative inline-flex cursor-pointer items-center">
-          <input
-            id="switch"
-            type="checkbox"
-            checked={isOn}
-            className="peer sr-only"
-            onClick={disableGrouping}
-          />
-          <label htmlFor="switch" className="hidden"></label>
-          <div className="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
-        </label>
-        <span className="ml-3 text-gray-900 text-sm">
-          Allow automatic grouping
-        </span>
-      </div>
+      <Switch
+        isChecked={!!isOn}
+        text="Allow automatic grouping"
+        onChange={disableGrouping}
+      />
 
-      <div className="flex items-center mt-2">
-        <label className="relative inline-flex cursor-pointer items-center">
-          <input
-            id="autoPosition"
-            type="checkbox"
-            checked={isAutoPosition}
-            className="peer sr-only"
-            onClick={enableAutoPosition}
-          />
-          <label htmlFor="autoPosition" className="hidden"></label>
-          <div className="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
-        </label>
-        <span className="ml-3 text-gray-900 text-sm">
-          Allow automatic position
-        </span>
-      </div>
+      <Switch
+        isChecked={!!isAutoPosition}
+        text="Allow automatic position"
+        onChange={enableAutoPosition}
+      />
     </div>
   );
 };

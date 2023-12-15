@@ -74,3 +74,12 @@ export function matchesRule(url: URL, rule: FilterRuleItem) {
       return false;
   }
 }
+
+export function getRootDomain(url: URL) {
+  const host = url.host;
+  const parts = host.split(".");
+  if (parts.length <= 2) {
+    return host;
+  }
+  return parts.slice(1).join(".");
+}

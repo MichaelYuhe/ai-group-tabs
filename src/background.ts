@@ -1,5 +1,11 @@
 import { handleOneTab } from "./services";
-import { DEFAULT_GROUP, DEFAULT_PROMPT, getStorage, setStorage } from "./utils";
+import {
+  DEFAULT_GROUP,
+  DEFAULT_PROMPT,
+  getRootDomain,
+  getStorage,
+  setStorage,
+} from "./utils";
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
@@ -26,7 +32,10 @@ chrome.storage.local.get("colors", (result) => {
 
 const windowGroupMaps: { [key: number]: Map<string, number> } = {};
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+// tab map: { tabId: tabInformation }
+const tabMap: { [key: number]: chrome.tabs.Tab } = {};
+
+chrome.runtime.onMessage.addListener((message) => {
   chrome.storage.local.get("types", (resultStorage) => {
     chrome.storage.local.get("colors", (resultColors) => {
       if (resultStorage.types) {
@@ -37,6 +46,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           // Check if result[i] exists before accessing the 'type' property
           if (result[i]) {
             groupOneType(result[i].type, result[i].tabIds, colors[i]);
+            result[i].tabIds.forEach((tabId: number) => {
+              if (tabId) {
+                chrome.tabs.get(tabId, (tab) => {
+                  tabMap[tabId] = tab;
+                });
+              }
+            });
           } else {
             // Handle the case where there is no corresponding entry in result for this type
             console.error(`No corresponding result for type index ${i}`);
@@ -152,11 +168,13 @@ async function handleNewTab(tab: chrome.tabs.Tab) {
     !tab.id ||
     !tab.url ||
     window.type != "normal" ||
-    !types.length ||
-    (tab.status === "complete" && tab.url.startsWith("chrome://"))
+    !types.length
   ) {
     return;
   }
+
+  tabMap[tab.id] = tab;
+
   try {
     await processTabAndGroup(tab, types);
   } catch (error) {
@@ -165,22 +183,29 @@ async function handleNewTab(tab: chrome.tabs.Tab) {
 }
 
 async function handleTabUpdate(
-  tabId: number,
+  _tabId: number,
   changeInfo: chrome.tabs.TabChangeInfo,
   tab: chrome.tabs.Tab
 ) {
   const enable = await getStorage<boolean>("isOn");
   const window = await chrome.windows.get(tab.windowId);
+
+  if (!enable || !tab.id || !tab.url) return;
+
+  const oldTab = tabMap[tab.id];
   if (
-    !enable ||
-    !tab.id ||
-    !tab.url ||
-    window.type != "normal" ||
-    tab.url.startsWith("chrome://") ||
-    changeInfo.status !== "complete"
+    oldTab &&
+    oldTab.url &&
+    getRootDomain(new URL(oldTab.url)) === getRootDomain(new URL(tab.url))
   ) {
     return;
   }
+
+  if (window.type != "normal" || changeInfo.status !== "complete") {
+    return;
+  }
+
+  tabMap[tab.id] = tab;
 
   try {
     await processTabAndGroup(tab, types);
@@ -191,7 +216,7 @@ async function handleTabUpdate(
 
 chrome.tabs.onCreated.addListener(handleNewTab);
 chrome.tabs.onUpdated.addListener(handleTabUpdate);
-chrome.tabs.onDetached.addListener((tabId, detachInfo) => {
+chrome.tabs.onDetached.addListener((_tabId, detachInfo) => {
   const windowId = detachInfo.oldWindowId;
   if (
     windowGroupMaps.hasOwnProperty(windowId) &&
@@ -199,4 +224,7 @@ chrome.tabs.onDetached.addListener((tabId, detachInfo) => {
   ) {
     delete windowGroupMaps[windowId];
   }
+});
+chrome.tabs.onRemoved.addListener((tabId) => {
+  delete tabMap[tabId];
 });
