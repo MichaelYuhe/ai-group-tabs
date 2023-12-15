@@ -1,5 +1,11 @@
 import { handleOneTab } from "./services";
-import { DEFAULT_GROUP, DEFAULT_PROMPT, getStorage, setStorage } from "./utils";
+import {
+  DEFAULT_GROUP,
+  DEFAULT_PROMPT,
+  getRootDomain,
+  getStorage,
+  setStorage,
+} from "./utils";
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
@@ -20,6 +26,9 @@ chrome.storage.local.get("types", (result) => {
 
 const windowGroupMaps: { [key: number]: Map<string, number> } = {};
 
+// tab map: { tabId: tabInformation }
+const tabMap: { [key: number]: chrome.tabs.Tab } = {};
+
 chrome.runtime.onMessage.addListener((message) => {
   chrome.storage.local.get("types", (resultStorage) => {
     if (resultStorage.types) {
@@ -30,6 +39,13 @@ chrome.runtime.onMessage.addListener((message) => {
         // Check if result[i] exists before accessing the 'type' property
         if (result[i]) {
           groupOneType(result[i].type, result[i].tabIds);
+          result[i].tabIds.forEach((tabId: number) => {
+            if (tabId) {
+              chrome.tabs.get(tabId, (tab) => {
+                tabMap[tabId] = tab;
+              });
+            }
+          });
         } else {
           // Handle the case where there is no corresponding entry in result for this type
           console.error(`No corresponding result for type index ${i}`);
@@ -146,11 +162,13 @@ async function handleNewTab(tab: chrome.tabs.Tab) {
     !tab.id ||
     !tab.url ||
     window.type != "normal" ||
-    !types.length ||
-    (tab.status === "complete" && tab.url.startsWith("chrome://"))
+    !types.length
   ) {
     return;
   }
+
+  tabMap[tab.id] = tab;
+
   try {
     await processTabAndGroup(tab, types);
   } catch (error) {
@@ -165,16 +183,23 @@ async function handleTabUpdate(
 ) {
   const enable = await getStorage<boolean>("isOn");
   const window = await chrome.windows.get(tab.windowId);
+
+  if (!enable || !tab.id || !tab.url) return;
+
+  const oldTab = tabMap[tab.id];
   if (
-    !enable ||
-    !tab.id ||
-    !tab.url ||
-    window.type != "normal" ||
-    tab.url.startsWith("chrome://") ||
-    changeInfo.status !== "complete"
+    oldTab &&
+    oldTab.url &&
+    getRootDomain(new URL(oldTab.url)) === getRootDomain(new URL(tab.url))
   ) {
     return;
   }
+
+  if (window.type != "normal" || changeInfo.status !== "complete") {
+    return;
+  }
+
+  tabMap[tab.id] = tab;
 
   try {
     await processTabAndGroup(tab, types);
@@ -193,4 +218,7 @@ chrome.tabs.onDetached.addListener((_tabId, detachInfo) => {
   ) {
     delete windowGroupMaps[windowId];
   }
+});
+chrome.tabs.onRemoved.addListener((tabId) => {
+  delete tabMap[tabId];
 });
