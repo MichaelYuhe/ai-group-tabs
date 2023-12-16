@@ -104,7 +104,7 @@ function PromptSettings() {
   const [prompt, setPrompt] = useState<string | undefined>(DEFAULT_PROMPT);
   const [isPromptValid, setIsPromptValid] = useState<boolean>(true);
 
-  const promptFormatWarning: string = `{{types}} must be in the prompt`;
+  const promptFormatWarning: string = `{{tabURL}} {{tabTitle}} {{types}} must be in the prompt`;
 
   useEffect(() => {
     getStorage<string>("prompt").then(setPrompt);

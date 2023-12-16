@@ -23,14 +23,15 @@ const renderPrompt = async (
   return [
     {
       role: "system",
-      content: "Act as a brwoser tab group classificator",
+      content: "You are a brwoser tab group classificator",
     },
     {
       role: "user",
-      content:
-        Mustache.render(prompt, {
-          types: types.join(", "),
-        }) + `, tab url: "${tab.url}", tab title: "${tab.title}"`,
+      content: Mustache.render(prompt, {
+        tabURL: tab.url,
+        tabTitle: tab.title,
+        types: types.join(", "),
+      }),
     },
   ];
 };
