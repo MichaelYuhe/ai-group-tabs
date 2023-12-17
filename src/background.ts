@@ -5,6 +5,10 @@ import {
   getRootDomain,
   getStorage,
   setStorage,
+  tabGroupMap,
+  createdManualType,
+  updatedManualType,
+  curryFilterManualGroups,
 } from "./utils";
 
 chrome.runtime.onInstalled.addListener((details) => {
@@ -28,23 +32,20 @@ const windowGroupMaps: { [key: number]: Map<string, number> } = {};
 
 // tab map: { tabId: tabInformation }
 const tabMap: { [key: number]: chrome.tabs.Tab } = {};
-const tabGroupMap: {
-  [key: number]: {
-    type: "manual" | "setting";
-    title: string;
-  };
-} = {};
 
 chrome.runtime.onMessage.addListener((message) => {
-  chrome.storage.local.get("types", (resultStorage) => {
+  chrome.storage.local.get("types", async (resultStorage) => {
     if (resultStorage.types) {
       types = resultStorage.types;
 
       const result = message.result;
+
+      const filterTabs = await curryFilterManualGroups();
+
       types.forEach((_, i) => {
         // Check if result[i] exists before accessing the 'type' property
         if (result[i]) {
-          groupOneType(result[i].type, result[i].tabIds);
+          groupOneType(result[i].type, result[i].tabIds.filter(filterTabs));
           result[i].tabIds.forEach((tabId: number) => {
             if (tabId) {
               chrome.tabs.get(tabId, (tab) => {
@@ -61,34 +62,6 @@ chrome.runtime.onMessage.addListener((message) => {
   });
 });
 
-const createdManualType = (group: chrome.tabGroups.TabGroup) => {
-  if (!group.title) return;
-  const hasCreatedType = types.find((type, index) => {
-    if (type === group.title) {
-      types[index] = group.title;
-      return true;
-    }
-    return false;
-  });
-  if (!hasCreatedType) {
-    types.push(group.title);
-    tabGroupMap[group.id] = { type: "manual", title: group.title };
-    setStorage<string[]>("types", types);
-  }
-};
-
-const updatedManualType = (group: chrome.tabGroups.TabGroup) => {
-  if (!group.title) return;
-  const existType = types.findIndex(
-    (type) => type === tabGroupMap[group.id].title
-  );
-  if (existType) {
-    types.splice(existType, 1, group.title);
-    tabGroupMap[group.id] = { type: "manual", title: group.title };
-    setStorage<string[]>("types", types);
-  }
-};
-
 chrome.tabGroups.onUpdated.addListener(async (group) => {
   if (!windowGroupMaps.hasOwnProperty(group.windowId)) {
     windowGroupMaps[group.windowId] = new Map<string, number>();
@@ -101,9 +74,9 @@ chrome.tabGroups.onUpdated.addListener(async (group) => {
   // 更新types中的群组条目
   if (types && types.length > 0) {
     if (!tabGroupMap[group.id]) {
-      createdManualType(group);
+      createdManualType(types, group);
     } else {
-      updatedManualType(group);
+      updatedManualType(types, group);
     }
   }
 });
