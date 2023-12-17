@@ -24,10 +24,6 @@ export function getStorage<V = any>(key: string): Promise<V | undefined> {
   });
 }
 
-export const DEFAULT_PROMPT: string =
-  `Classify the tab group base on the provided URL ({{tabURL}}) and title ({{tabTitle}}) into one of the categories: ` +
-  `{{types}}. Response with the category only, without any comments.`;
-
 export function matchesRule(url: URL, rule: FilterRuleItem) {
   const { type, rule: value } = rule;
   if (!value) {
