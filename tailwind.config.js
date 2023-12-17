@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#4592f7",
+        primary: "#6300FF",
       },
       opacity: {
         lg: "0.87",

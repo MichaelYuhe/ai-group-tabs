@@ -53,8 +53,8 @@ function BasicSettings() {
           value={model}
           onChange={updateModel}
           id="models"
-          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
-              focus:ring-blue-500 focus:border-blue-500 block"
+          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+          focus:ring-blue-500 focus:border-blue-500 block"
         >
           <option selected>Choose a model</option>
           <option value="gpt-4">GPT 4</option>
@@ -70,8 +70,8 @@ function BasicSettings() {
         </label>
 
         <input
-          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
-              focus:ring-blue-500 focus:border-blue-500 block"
+          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+          focus:ring-blue-500 focus:border-blue-500 block"
           value={apiURL}
           onChange={updateApiURL}
           id="api_url"
@@ -104,7 +104,7 @@ function PromptSettings() {
   const [prompt, setPrompt] = useState<string | undefined>(DEFAULT_PROMPT);
   const [isPromptValid, setIsPromptValid] = useState<boolean>(true);
 
-  const promptFormatWarning: string = `{{tabURL}}, {{tabTitle}} and {{types}} must be in the prompt`;
+  const promptFormatWarning: string = `{{tabURL}} {{tabTitle}} {{types}} must be in the prompt`;
 
   useEffect(() => {
     getStorage<string>("prompt").then(setPrompt);
@@ -148,7 +148,7 @@ function PromptSettings() {
         )}
 
         <textarea
-          className="bg-gray-50 border w-64 h-64 border-gray-300 text-gray-900 text-sm rounded-lg
+          className="bg-gray-50 border w-64 h-64 border-gray-300 text-gray-900 text-sm rounded-lg 
           focus:ring-blue-500 focus:border-blue-500 block"
           value={prompt}
           onChange={updatePrompt}
