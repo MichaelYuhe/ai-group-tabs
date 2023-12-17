@@ -2,11 +2,12 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { batchGroupTabs } from "./services";
-import { DEFAULT_GROUP, getStorage, setStorage } from "./utils";
-
+import { Color, DEFAULT_GROUP, getStorage, setStorage } from "./utils";
 import "./popup.css";
 import Input from "./components/Input";
 import Switch from "./components/Switch";
+
+const DEFAULT_COLOR = Object.keys(Color);
 
 const Popup = () => {
   const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
@@ -21,7 +22,9 @@ const Popup = () => {
     undefined
   );
   const [isValidating, setIsValidating] = useState<boolean>(false);
-
+  const [color, setColor] = useState<string>("grey");
+  const [colors, setColors] = useState<string[]>([]);
+  const [colorsEnabled, setColorsEnabled] = useState<boolean>(false);
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
     getStorage<boolean>("isOn").then(setIsOn);
@@ -33,6 +36,12 @@ const Popup = () => {
         return;
       }
       setTypes(types);
+    });
+    getStorage<string[]>("colors").then((colors) => {
+      if (colors) setColors(colors);
+    });
+    getStorage<boolean>("colorsEnabled").then((colorsEnabled) => {
+      if (colorsEnabled !== undefined) setColorsEnabled(colorsEnabled);
     });
   }, []);
 
@@ -198,11 +207,21 @@ const Popup = () => {
               return;
             }
             const newTypes = [...types, newType];
+            const newColors = colorsEnabled
+              ? [...colors, color]
+              : [
+                  ...colors,
+                  DEFAULT_COLOR[
+                    Math.floor(Math.random() * DEFAULT_COLOR.length)
+                  ],
+                ];
             setNewType("");
             setTypes(newTypes);
+            setColors(newColors);
             e.preventDefault();
 
             setStorage<string[]>("types", newTypes);
+            setStorage<string[]>("colors", newColors);
           }}
         >
           <div className="flex items-center gap-x-2">
@@ -214,7 +233,6 @@ const Popup = () => {
                 setNewType(e.target.value);
               }}
             />
-
             <button
               disabled={!newType}
               className="rounded-md w-fit bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
@@ -225,6 +243,29 @@ const Popup = () => {
             </button>
           </div>
         </form>
+
+        {colorsEnabled && (
+          <div className="flex items-center gap-x-2">
+            {DEFAULT_COLOR.map((colorOption) => (
+              <input
+                type="radio"
+                name="color"
+                className={`w-4 h-4 rounded-full border-transparent checked:bg-transparent checked:ring-2 checked:ring-offset-2 focus:outline-none checked:bg-none`}
+                style={
+                  {
+                    backgroundColor: colorOption,
+                    "--tw-ring-color": colorOption,
+                  } as React.CSSProperties
+                }
+                checked={color === colorOption}
+                value={colorOption}
+                onChange={(e) => {
+                  setColor(e.target.value);
+                }}
+              ></input>
+            ))}
+          </div>
+        )}
 
         {types?.map((type, idx) => (
           <div className="flex items-center gap-x-2" key={idx}>
@@ -237,14 +278,49 @@ const Popup = () => {
                 setTypes(newTypes);
               }}
             />
-
+            {colorsEnabled && (
+              <>
+                <div
+                  className={`w-4 h-4 flex-shrink-0 transition-colors ease-out-in`}
+                  style={{
+                    backgroundColor: colors[idx],
+                  }}
+                ></div>
+                <img
+                  src="arrow_right.png"
+                  alt=""
+                  onClick={() => {
+                    const nextIdx =
+                      (DEFAULT_COLOR.indexOf(colors[idx]) + 1) %
+                      DEFAULT_COLOR.length;
+                    const newColors = [...colors];
+                    newColors[idx] = DEFAULT_COLOR[nextIdx];
+                    // colorsRef.current[idx].animate(
+                    //   [{ opacity: "0" }, { opacity: "1" }],
+                    //   {
+                    //     duration: 400,
+                    //   }
+                    // );
+                    setColors(newColors);
+                    setStorage<string[]>("colors", newColors);
+                  }}
+                  className="select-none"
+                />
+              </>
+            )}
             <button
               onClick={() => {
                 const newTypes = [...types];
+                const newColors = [...colors];
                 newTypes.splice(idx, 1);
+                newColors.splice(idx, 1);
+
                 setTypes(newTypes);
+                setColors(newColors);
                 setStorage<string[]>("types", newTypes);
+                setStorage<string[]>("colors", newColors);
               }}
+              className="select-none"
             >
               Delete
             </button>

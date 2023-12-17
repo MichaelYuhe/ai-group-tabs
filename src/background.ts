@@ -1,5 +1,6 @@
 import { handleOneTab } from "./services";
 import {
+  Color,
   DEFAULT_GROUP,
   DEFAULT_PROMPT,
   getRootDomain,
@@ -17,10 +18,16 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 let types: string[] = [];
+let colors: Color[] = [];
 
 chrome.storage.local.get("types", (result) => {
   if (result.types) {
     types = result.types;
+  }
+});
+chrome.storage.local.get("colors", (result) => {
+  if (result.colors) {
+    colors = result.colors;
   }
 });
 
@@ -31,27 +38,29 @@ const tabMap: { [key: number]: chrome.tabs.Tab } = {};
 
 chrome.runtime.onMessage.addListener((message) => {
   chrome.storage.local.get("types", (resultStorage) => {
-    if (resultStorage.types) {
-      types = resultStorage.types;
-
-      const result = message.result;
-      types.forEach((_, i) => {
-        // Check if result[i] exists before accessing the 'type' property
-        if (result[i]) {
-          groupOneType(result[i].type, result[i].tabIds);
-          result[i].tabIds.forEach((tabId: number) => {
-            if (tabId) {
-              chrome.tabs.get(tabId, (tab) => {
-                tabMap[tabId] = tab;
-              });
-            }
-          });
-        } else {
-          // Handle the case where there is no corresponding entry in result for this type
-          console.error(`No corresponding result for type index ${i}`);
-        }
-      });
-    }
+    chrome.storage.local.get("colors", (resultColors) => {
+      if (resultStorage.types) {
+        types = resultStorage.types;
+        if (resultColors.colors) colors = resultColors.colors;
+        const result = message.result;
+        types.forEach((_, i) => {
+          // Check if result[i] exists before accessing the 'type' property
+          if (result[i]) {
+            groupOneType(result[i].type, result[i].tabIds, colors[i]);
+            result[i].tabIds.forEach((tabId: number) => {
+              if (tabId) {
+                chrome.tabs.get(tabId, (tab) => {
+                  tabMap[tabId] = tab;
+                });
+              }
+            });
+          } else {
+            // Handle the case where there is no corresponding entry in result for this type
+            console.error(`No corresponding result for type index ${i}`);
+          }
+        });
+      }
+    });
   });
 });
 
@@ -64,9 +73,7 @@ chrome.tabGroups.onUpdated.addListener((group) => {
   }
 });
 
-async function groupOneType(type: string, tabIds: number[]) {
-  if (tabIds.length === 0) return;
-
+async function groupOneType(type: string, tabIds: number[], color: Color) {
   const windowIdMap: { [key: number]: number[] } = {};
 
   const getTab = (tabId: number) =>
@@ -94,7 +101,7 @@ async function groupOneType(type: string, tabIds: number[]) {
       },
       async (groupId) => {
         if (groupId) {
-          await chrome.tabGroups.update(groupId, { title: type });
+          await chrome.tabGroups.update(groupId, { title: type, color });
         } else {
           throw new Error(
             `Failed to create group for tabs ${JSON.stringify(
