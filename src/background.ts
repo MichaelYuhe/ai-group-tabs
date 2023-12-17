@@ -85,9 +85,25 @@ async function groupOneType(type: string, tabIds: number[]) {
 
   for (const windowId in windowIdMap) {
     const tabsForWindow = windowIdMap[windowId];
-    chrome.tabs.group({ tabIds: tabsForWindow }, async (groupId) => {
-      await chrome.tabGroups.update(groupId, { title: type });
-    });
+    chrome.tabs.group(
+      {
+        tabIds: tabsForWindow,
+        createProperties: {
+          windowId: parseInt(windowId),
+        },
+      },
+      async (groupId) => {
+        if (groupId) {
+          await chrome.tabGroups.update(groupId, { title: type });
+        } else {
+          throw new Error(
+            `Failed to create group for tabs ${JSON.stringify(
+              tabsForWindow
+            )} in window ${windowId}`
+          );
+        }
+      }
+    );
   }
 }
 
@@ -96,8 +112,14 @@ async function createGroupWithTitle(tabId: number, title: string) {
     chrome.tabs.get(tabId, async (tab) => {
       if (tab.windowId) {
         const groupId = await chrome.tabs.group({ tabIds: [tabId] });
-        await chrome.tabGroups.update(groupId, { title });
-        windowGroupMaps[tab.windowId].set(title, groupId);
+        if (groupId) {
+          await chrome.tabGroups.update(groupId, { title });
+          windowGroupMaps[tab.windowId].set(title, groupId);
+        } else {
+          throw new Error(
+            `Failed to create group for tabs ${tabId} in window ${tab.windowId}`
+          );
+        }
       }
     });
   } catch (error) {
