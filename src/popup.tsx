@@ -17,6 +17,10 @@ const Popup = () => {
   );
   const [newType, setNewType] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isValidated, setIsValidated] = useState<boolean | undefined>(
+    undefined
+  );
+  const [isValidating, setIsValidating] = useState<boolean>(false);
 
   useEffect(() => {
     getStorage<string>("openai_key").then(setOpenAIKey);
@@ -80,8 +84,62 @@ const Popup = () => {
     }
   };
 
+  const handleValidateOpenAIKey = async () => {
+    if (!openAIKey) {
+      return;
+    }
+
+    setIsValidating(true);
+    try {
+      const response = await fetch(
+        "https://api.openai.com/v1/engines/davinci/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${openAIKey}`,
+          },
+          body: JSON.stringify({
+            prompt: "This is a test",
+            max_tokens: 5,
+            temperature: 0.5,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            stop: ["\n"],
+          }),
+        }
+      );
+      if (response.status === 200) {
+        setIsValidated(true);
+      } else {
+        setIsValidated(false);
+      }
+    } catch (error) {
+      setIsValidated(false);
+    } finally {
+      setIsValidating(false);
+
+      setTimeout(() => {
+        setIsValidated(undefined);
+      }, 3000);
+    }
+  };
+
   return (
     <div className="p-6 min-w-[24rem]">
+      <div className="flex items-center mb-6 justify-between">
+        <h1 className="text-xl font-bold">AI Group Tab</h1>
+
+        <button
+          onClick={() => {
+            chrome.runtime.openOptionsPage();
+          }}
+        >
+          <img src="/cog.svg" alt="cog" className="w-6 h-6" />
+        </button>
+      </div>
+
       <div className="relative mb-2">
         <label
           className="absolute -top-2 left-2 inline-block bg-white px-1 text-xs font-medium text-gray-900"
@@ -90,14 +148,33 @@ const Popup = () => {
           OpenAI Key
         </label>
 
-        <Input
-          id="openai-key"
-          type="password"
-          onChange={updateOpenAIKey}
-          onBlur={updateKeyInStorage}
-          value={openAIKey}
-          placeholder="Your OpenAI Key"
-        />
+        <div className="flex items-center gap-x-2">
+          <Input
+            id="openai-key"
+            type="password"
+            onChange={updateOpenAIKey}
+            onBlur={updateKeyInStorage}
+            value={openAIKey}
+            placeholder="Your OpenAI Key"
+          />
+
+          <button
+            onClick={handleValidateOpenAIKey}
+            disabled={!openAIKey}
+            className="rounded-md flex items-center w-fit bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
+            text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2
+            focus-visible:outline-offset-2 disabled:bg-primary/sm"
+          >
+            {isValidating && <LoadingSpinner />}
+            {isValidated === undefined ? (
+              "Validate"
+            ) : isValidated ? (
+              <img src="/check.svg" alt="check" />
+            ) : (
+              <img src="/error.svg" alt="error" />
+            )}
+          </button>
+        </div>
       </div>
 
       {!openAIKey?.length && (
