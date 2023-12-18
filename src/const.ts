@@ -9,6 +9,11 @@ export const DEFAULT_GROUP = [
   "Education",
   "Productivity",
   "Utilities",
+  "News",
+  "Health",
+  "Finance",
+  "Development",
+  "Work",
 ];
 
 export enum Color {
