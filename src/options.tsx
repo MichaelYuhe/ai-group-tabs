@@ -200,6 +200,7 @@ const Options = () => {
         <div className="flex w-full p-2 bg-slate-200 rounded-2xl">
           {TABS.map((tab) => (
             <button
+              key={tab}
               className={`${
                 activeTab === tab ? "bg-white" : ""
               } flex-1 text-center py-4 font-medium rounded-lg`}
