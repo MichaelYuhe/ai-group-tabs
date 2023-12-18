@@ -20,5 +20,6 @@ export default defineConfig({
         dir: "dist",
       },
     },
+    sourcemap: process.env.NODE_ENV === "development",
   },
 });

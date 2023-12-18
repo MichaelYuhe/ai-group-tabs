@@ -5,7 +5,7 @@
   "packageManager": "pnpm@8.11.0",
   "scripts": {
     "prepare": "husky install",
-    "dev": "vite build --watch",
+    "dev": "NODE_ENV=development vite build --watch",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "style": "prettier --check \"src/**/*.{ts,tsx}\"",
