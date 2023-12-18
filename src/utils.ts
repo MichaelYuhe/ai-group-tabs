@@ -57,3 +57,73 @@ export function getRootDomain(url: URL) {
   }
   return parts.slice(1).join(".");
 }
+
+export const getTabsFromGroup = async (
+  groupId: number
+): Promise<chrome.tabs.Tab[]> => {
+  return new Promise((resolve) => {
+    chrome.tabs.query({ groupId }, (tabs) => {
+      resolve(tabs);
+    });
+  });
+};
+
+export const tabGroupMap: {
+  [key: number]: {
+    type: "manual" | "setting";
+    title: string;
+  };
+} = {};
+
+export const createdManualType = (
+  types: string[],
+  group: chrome.tabGroups.TabGroup
+) => {
+  if (!group.title) return;
+  const hasCreatedType = types.find((type, index) => {
+    if (type === group.title) {
+      types[index] = group.title;
+      return true;
+    }
+    return false;
+  });
+  if (!hasCreatedType) {
+    types.push(group.title);
+    tabGroupMap[group.id] = { type: "manual", title: group.title };
+    setStorage<string[]>("types", types);
+  }
+};
+
+export const updatedManualType = (
+  types: string[],
+  group: chrome.tabGroups.TabGroup
+) => {
+  if (!group.title) return;
+  const existType = types.findIndex(
+    (type) => type === tabGroupMap[group.id].title
+  );
+  if (existType) {
+    types.splice(existType, 1, group.title);
+    tabGroupMap[group.id] = { type: "manual", title: group.title };
+    setStorage<string[]>("types", types);
+  }
+};
+
+export const curryFilterManualGroups = async () => {
+  const manualGroups = Object.entries(tabGroupMap).filter(
+    ([_groupId, group]) => group.type === "manual"
+  );
+  const manualGroupsTabs = (
+    await Promise.all(
+      manualGroups.map(async ([groupId, _group]) => {
+        const groupTabs = getTabsFromGroup(parseInt(groupId));
+        return groupTabs;
+      })
+    )
+  ).flat();
+
+  // filter out tabs that are in manual groups
+  return (tabId: number) => {
+    return !manualGroupsTabs.map((tab) => tab.id).includes(tabId);
+  };
+};

@@ -1,6 +1,14 @@
 import { Color, DEFAULT_GROUP, DEFAULT_PROMPT } from "./const";
 import { handleOneTab } from "./services";
-import { getRootDomain, getStorage, setStorage } from "./utils";
+import {
+  getRootDomain,
+  getStorage,
+  setStorage,
+  tabGroupMap,
+  createdManualType,
+  updatedManualType,
+  curryFilterManualGroups,
+} from "./utils";
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
@@ -31,16 +39,23 @@ const windowGroupMaps: { [key: number]: Map<string, number> } = {};
 const tabMap: { [key: number]: chrome.tabs.Tab } = {};
 
 chrome.runtime.onMessage.addListener((message) => {
-  chrome.storage.local.get("types", (resultStorage) => {
-    chrome.storage.local.get("colors", (resultColors) => {
+  chrome.storage.local.get("types", async (resultStorage) => {
+    chrome.storage.local.get("colors", async (resultColors) => {
       if (resultStorage.types) {
         types = resultStorage.types;
         if (resultColors.colors) colors = resultColors.colors;
         const result = message.result;
+
+        const filterTabs = await curryFilterManualGroups();
+
         types.forEach((_, i) => {
           // Check if result[i] exists before accessing the 'type' property
           if (result[i]) {
-            groupOneType(result[i].type, result[i].tabIds, colors[i]);
+            groupOneType(
+              result[i].type,
+              result[i].tabIds.filter(filterTabs),
+              colors[i]
+            );
             result[i].tabIds.forEach((tabId: number) => {
               if (tabId) {
                 chrome.tabs.get(tabId, (tab) => {
@@ -58,12 +73,22 @@ chrome.runtime.onMessage.addListener((message) => {
   });
 });
 
-chrome.tabGroups.onUpdated.addListener((group) => {
+chrome.tabGroups.onUpdated.addListener(async (group) => {
   if (!windowGroupMaps.hasOwnProperty(group.windowId)) {
     windowGroupMaps[group.windowId] = new Map<string, number>();
   }
   if (group.title) {
     windowGroupMaps[group.windowId].set(group.title, group.id);
+  }
+
+  const types = await getStorage<string[]>("types");
+  // 更新types中的群组条目
+  if (types && types.length > 0) {
+    if (!tabGroupMap[group.id]) {
+      createdManualType(types, group);
+    } else {
+      updatedManualType(types, group);
+    }
   }
 });
 
