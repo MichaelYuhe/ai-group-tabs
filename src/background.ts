@@ -1,12 +1,6 @@
+import { Color, DEFAULT_GROUP, DEFAULT_PROMPT } from "./const";
 import { handleOneTab } from "./services";
-import {
-  Color,
-  DEFAULT_GROUP,
-  DEFAULT_PROMPT,
-  getRootDomain,
-  getStorage,
-  setStorage,
-} from "./utils";
+import { getRootDomain, getStorage, setStorage } from "./utils";
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {

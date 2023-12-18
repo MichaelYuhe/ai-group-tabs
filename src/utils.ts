@@ -24,31 +24,6 @@ export function getStorage<V = any>(key: string): Promise<V | undefined> {
   });
 }
 
-export const DEFAULT_GROUP = [
-  "Social",
-  "Entertainment",
-  "Read Material",
-  "Education",
-  "Productivity",
-  "Utilities",
-];
-
-export enum Color {
-  grey = "grey",
-  blue = "blue",
-  red = "red",
-  yellow = "yellow",
-  green = "green",
-  pink = "pink",
-  purple = "purple",
-  cyan = "cyan",
-  orange = "orange",
-}
-
-export const DEFAULT_PROMPT: string =
-  `Classify the tab group base on the provided URL ({{tabURL}}) and title ({{tabTitle}}) into one of the categories: ` +
-  `{{types}}. Response with the category only, without any comments.`;
-
 export function matchesRule(url: URL, rule: FilterRuleItem) {
   const { type, rule: value } = rule;
   if (!value) {

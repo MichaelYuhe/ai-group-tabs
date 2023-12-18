@@ -1,10 +1,11 @@
 import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./options.css";
-import { DEFAULT_PROMPT, getStorage, setStorage } from "./utils";
+import { getStorage, setStorage } from "./utils";
 import Switch from "./components/Switch";
 import FilterRules from "./components/FilterRules";
 import { FilterRuleItem } from "./types";
+import { DEFAULT_PROMPT } from "./const";
 
 const TABS = [
   "Basic Settings",
@@ -53,7 +54,7 @@ function BasicSettings() {
           value={model}
           onChange={updateModel}
           id="models"
-          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
           focus:ring-blue-500 focus:border-blue-500 block"
         >
           <option selected>Choose a model</option>
@@ -70,7 +71,7 @@ function BasicSettings() {
         </label>
 
         <input
-          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
           focus:ring-blue-500 focus:border-blue-500 block"
           value={apiURL}
           onChange={updateApiURL}
@@ -148,7 +149,7 @@ function PromptSettings() {
         )}
 
         <textarea
-          className="bg-gray-50 border w-64 h-64 border-gray-300 text-gray-900 text-sm rounded-lg 
+          className="bg-gray-50 border w-64 h-64 border-gray-300 text-gray-900 text-sm rounded-lg
           focus:ring-blue-500 focus:border-blue-500 block"
           value={prompt}
           onChange={updatePrompt}

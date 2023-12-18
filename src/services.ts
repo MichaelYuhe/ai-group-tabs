@@ -1,6 +1,7 @@
 import Mustache from "mustache";
-import { DEFAULT_PROMPT, getStorage, matchesRule } from "./utils";
+import { getStorage, matchesRule } from "./utils";
 import { FilterRuleItem } from "./types";
+import { DEFAULT_PROMPT } from "./const";
 
 interface TabGroup {
   type: string;
