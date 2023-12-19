@@ -8,6 +8,7 @@ import Input from "./components/Input";
 import Switch from "./components/Switch";
 import { ColorPicker } from "./components/ColorPicker";
 import { Color, DEFAULT_GROUP, TabColorConfig } from "./const";
+import { toast } from "./components/toast";
 
 const Popup = () => {
   const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
@@ -88,6 +89,10 @@ const Popup = () => {
     try {
       const tabs = await chrome.tabs.query({ currentWindow: true });
       chrome.tabs.ungroup(tabs.map((tab) => tab.id!));
+      toast({
+        type: "success",
+        message: "Ungrouped all tabs",
+      });
     } catch (error) {
       console.error(error);
     }
