@@ -136,6 +136,18 @@ const Popup = () => {
       }
     } catch (error) {
       setIsValidated(false);
+      console.error(error);
+      if (error instanceof Error) {
+        toast({
+          type: "error",
+          message: "Invalid OpenAI Key: " + error.message,
+        });
+      } else {
+        toast({
+          type: "error",
+          message: "Invalid OpenAI Key",
+        });
+      }
     } finally {
       setIsValidating(false);
 
