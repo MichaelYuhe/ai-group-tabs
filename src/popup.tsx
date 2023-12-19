@@ -128,6 +128,11 @@ const Popup = () => {
         setIsValidated(true);
       } else {
         setIsValidated(false);
+        const txt = await response.text();
+        toast({
+          type: "error",
+          message: "Invalid OpenAI Key: " + response.status + " " + txt,
+        });
       }
     } catch (error) {
       setIsValidated(false);
@@ -141,7 +146,7 @@ const Popup = () => {
   };
 
   return (
-    <div className="p-6 min-w-[24rem]">
+    <div className="p-6 pb-9 min-w-[24rem] ">
       <div className="flex items-center mb-6 justify-between">
         <h1 className="text-xl font-bold">AI Group Tab</h1>
 

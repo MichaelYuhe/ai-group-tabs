@@ -15,6 +15,10 @@ const htmlToElement = <T extends ChildNode>(html: string) => {
 
 const createToastContainer = () => {
   const styles = `
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
