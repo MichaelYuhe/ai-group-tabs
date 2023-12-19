@@ -5,7 +5,7 @@
   "packageManager": "pnpm@8.11.0",
   "scripts": {
     "prepare": "husky install",
-    "dev": "NODE_ENV=development vite build --watch",
+    "dev": "cross-env NODE_ENV=development vite build --watch",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "style": "prettier --check \"src/**/*.{ts,tsx}\"",
@@ -30,6 +30,7 @@
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.16",
+    "cross-env": "^7.0.3",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
     "postcss": "^8.4.32",
