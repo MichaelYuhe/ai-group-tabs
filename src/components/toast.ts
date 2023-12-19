@@ -66,7 +66,7 @@ const toastTypeStyles = {
  * ```
  */
 export function toast(message: string): HTMLDivElement;
-export function toast(message: Partial<ToastOptions>): HTMLDivElement;
+export function toast(options: Partial<ToastOptions>): HTMLDivElement;
 export function toast(messageOrOptions: string | Partial<ToastOptions>) {
   const toastOptions: ToastOptions =
     typeof messageOrOptions === "string"
