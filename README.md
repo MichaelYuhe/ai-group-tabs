@@ -18,7 +18,7 @@ Demo Video:
 - [x] Better prompt engineering
 - [x] Logo and name
 - [x] CI / CD for build and release new version
-- [ ] Add toast
+- [x] Add toast
 - [x] Use Vite and pnpm
 - [x] Group the updated tab only when a tab is updated
 - [x] Custom model and API server

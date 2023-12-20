@@ -8,6 +8,7 @@ import Input from "./components/Input";
 import Switch from "./components/Switch";
 import { ColorPicker } from "./components/ColorPicker";
 import { Color, DEFAULT_GROUP, TabColorConfig } from "./const";
+import { toast } from "./components/toast";
 
 const Popup = () => {
   const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
@@ -88,6 +89,10 @@ const Popup = () => {
     try {
       const tabs = await chrome.tabs.query({ currentWindow: true });
       chrome.tabs.ungroup(tabs.map((tab) => tab.id!));
+      toast({
+        type: "success",
+        message: "Ungrouped all tabs",
+      });
     } catch (error) {
       console.error(error);
     }
@@ -123,9 +128,26 @@ const Popup = () => {
         setIsValidated(true);
       } else {
         setIsValidated(false);
+        const txt = await response.text();
+        toast({
+          type: "error",
+          message: "Invalid OpenAI Key: " + response.status + " " + txt,
+        });
       }
     } catch (error) {
       setIsValidated(false);
+      console.error(error);
+      if (error instanceof Error) {
+        toast({
+          type: "error",
+          message: "Invalid OpenAI Key: " + error.message,
+        });
+      } else {
+        toast({
+          type: "error",
+          message: "Invalid OpenAI Key",
+        });
+      }
     } finally {
       setIsValidating(false);
 
@@ -136,7 +158,7 @@ const Popup = () => {
   };
 
   return (
-    <div className="p-6 min-w-[24rem]">
+    <div className="p-6 pb-9 min-w-[24rem] ">
       <div className="flex items-center mb-6 justify-between">
         <h1 className="text-xl font-bold">AI Group Tab</h1>
 
