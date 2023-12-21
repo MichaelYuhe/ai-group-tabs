@@ -1,7 +1,5 @@
-import Mustache from "mustache";
 import { getStorage, matchesRule } from "./utils";
-import { FilterRuleItem, ServiceProvider, TabInfo } from "./types";
-import { DEFAULT_PROMPT } from "./const";
+import { FilterRuleItem, TabInfo } from "./types";
 import { fetchType } from "./service-provider";
 
 interface TabGroup {
