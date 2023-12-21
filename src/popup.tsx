@@ -9,8 +9,17 @@ import Switch from "./components/Switch";
 import { ColorPicker } from "./components/ColorPicker";
 import { Color, DEFAULT_GROUP, TabColorConfig } from "./const";
 import { toast } from "./components/toast";
+import { ServiceProvider } from "./types";
+
+const getApiKeyHrefMap = {
+  Gemini: "https://ai.google.dev/",
+  GPT: "https://platform.openai.com/api-keys",
+};
 
 const Popup = () => {
+  const [serviceProvider, setServiceProvider] = useState<ServiceProvider>(
+    "GPT"
+  );
   const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
   const [types, setTypes] = useState<string[]>([]);
   const [isOn, setIsOn] = useState<boolean | undefined>(true);
@@ -43,6 +52,11 @@ const Popup = () => {
     });
     getStorage<boolean>("colorsEnabled").then((colorsEnabled) => {
       if (colorsEnabled !== undefined) setColorsEnabled(colorsEnabled);
+    });
+    getStorage<ServiceProvider>("serviceProvider").then((value) => {
+      if (value) {
+        setServiceProvider(value);
+      }
     });
   }, []);
 
@@ -105,34 +119,60 @@ const Popup = () => {
 
     setIsValidating(true);
     try {
-      const response = await fetch(
-        "https://api.openai.com/v1/engines/davinci/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${openAIKey}`,
-          },
-          body: JSON.stringify({
-            prompt: "This is a test",
-            max_tokens: 5,
-            temperature: 0.5,
-            top_p: 1,
-            frequency_penalty: 0,
-            presence_penalty: 0,
-            stop: ["\n"],
-          }),
+      if (serviceProvider === "Gemini") {
+        const response = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta3/models/text-bison-001:generateText?key=" +
+            openAIKey,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              prompt: { text: "This is a test" },
+            }),
+          }
+        );
+        if (response.status === 200) {
+          setIsValidated(true);
+        } else {
+          setIsValidated(false);
+          const txt = await response.text();
+          toast({
+            type: "error",
+            message: "Invalid Genmini Key: " + response.status + " " + txt,
+          });
         }
-      );
-      if (response.status === 200) {
-        setIsValidated(true);
       } else {
-        setIsValidated(false);
-        const txt = await response.text();
-        toast({
-          type: "error",
-          message: "Invalid OpenAI Key: " + response.status + " " + txt,
-        });
+        const response = await fetch(
+          "https://api.openai.com/v1/engines/davinci/completions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${openAIKey}`,
+            },
+            body: JSON.stringify({
+              prompt: "This is a test",
+              max_tokens: 5,
+              temperature: 0.5,
+              top_p: 1,
+              frequency_penalty: 0,
+              presence_penalty: 0,
+              stop: ["\n"],
+            }),
+          }
+        );
+        if (response.status === 200) {
+          setIsValidated(true);
+        } else {
+          setIsValidated(false);
+          const txt = await response.text();
+          toast({
+            type: "error",
+            message: "Invalid OpenAI Key: " + response.status + " " + txt,
+          });
+        }
       }
     } catch (error) {
       setIsValidated(false);
@@ -176,7 +216,7 @@ const Popup = () => {
           className="absolute -top-2 left-2 inline-block bg-white px-1 text-xs font-medium text-gray-900"
           htmlFor="openai-key"
         >
-          OpenAI Key
+          API Key
         </label>
 
         <div className="flex items-center gap-x-2">
@@ -212,7 +252,7 @@ const Popup = () => {
         <div className="text-sm text-gray-500 mb-2">
           You can get your key from{" "}
           <a
-            href="https://platform.openai.com/api-keys"
+            href={getApiKeyHrefMap[serviceProvider] || getApiKeyHrefMap.GPT}
             target="_blank"
             rel="noreferrer"
             className="text-primary/lg underline underline-offset-2 hover:text-primary"

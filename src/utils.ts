@@ -1,4 +1,4 @@
-import { FilterRuleItem } from "./types";
+import { FilterRuleItem, ServiceProvider } from "./types";
 
 export function setStorage<V = any>(key: string, value: V) {
   return new Promise((resolve, reject) => {
@@ -126,4 +126,10 @@ export const curryFilterManualGroups = async () => {
   return (tabId: number) => {
     return !manualGroupsTabs.map((tab) => tab.id).includes(tabId);
   };
+};
+
+export const getServiceProvider = async () => {
+  const serviceProvider =
+    (await getStorage<ServiceProvider>("serviceProvider")) || "GPT";
+  return serviceProvider;
 };

@@ -4,7 +4,7 @@ import "./options.css";
 import { getStorage, setStorage } from "./utils";
 import Switch from "./components/Switch";
 import FilterRules from "./components/FilterRules";
-import { FilterRuleItem } from "./types";
+import { FilterRuleItem, ServiceProvider } from "./types";
 import { DEFAULT_PROMPT } from "./const";
 
 const TABS = [
@@ -16,6 +16,9 @@ const TABS = [
 
 function BasicSettings() {
   const [model, setModel] = useState<string | undefined>("gpt-3.5-turbo");
+  const [serviceProvider, setServiceProvider] = useState<ServiceProvider>(
+    "GPT"
+  );
   const [apiURL, setApiURL] = useState<string | undefined>(
     "https://api.openai.com/v1/chat/completions"
   );
@@ -24,6 +27,11 @@ function BasicSettings() {
   ]);
   useEffect(() => {
     getStorage<string>("model").then(setModel);
+    getStorage<ServiceProvider>("serviceProvider").then((value) => {
+      if (value) {
+        setServiceProvider(value);
+      }
+    });
     getStorage<string>("apiURL").then(setApiURL);
     getStorage<FilterRuleItem[]>("filterRules").then(setFilterRules);
   }, []);
@@ -32,6 +40,14 @@ function BasicSettings() {
     setModel(e.target.value);
     setStorage("model", e.target.value);
   }, []);
+
+  const updateServiceProvider = useCallback(
+    (e: ChangeEvent<HTMLSelectElement>) => {
+      setServiceProvider(e.target.value as ServiceProvider);
+      setStorage("serviceProvider", e.target.value);
+    },
+    []
+  );
 
   const updateApiURL = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setApiURL(e.target.value);
@@ -47,38 +63,58 @@ function BasicSettings() {
     <div className="flex flex-col gap-y-8 p-4">
       <div className="flex flex-col gap-y-2">
         <label htmlFor="models" className="text-xl font-medium">
-          Choose an model
+          Choose a service provider
         </label>
 
         <select
-          value={model}
-          onChange={updateModel}
+          value={serviceProvider}
+          onChange={updateServiceProvider}
           id="models"
           className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
           focus:ring-blue-500 focus:border-blue-500 block"
         >
-          <option selected>Choose a model</option>
-          <option value="gpt-4">GPT 4</option>
-          <option value="gpt-4-32k">GPT 4 32k</option>
-          <option value="gpt-3.5-turbo-1106">GPT 3.5 turbo 1106</option>
-          <option value="gpt-3.5-turbo">GPT 3.5 turbo</option>
+          <option value="GPT">OpenAI GPT</option>
+          <option value="Gemini">Google Gemini</option>
         </select>
       </div>
 
-      <div className="flex flex-col gap-y-2">
-        <label htmlFor="api_url" className="text-xl font-medium">
-          API URL
-        </label>
+      {serviceProvider === "GPT" && (
+        <>
+          <div className="flex flex-col gap-y-2">
+            <label htmlFor="models" className="text-xl font-medium">
+              Choose an model
+            </label>
 
-        <input
-          className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
+            <select
+              value={model}
+              onChange={updateModel}
+              id="models"
+              className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
           focus:ring-blue-500 focus:border-blue-500 block"
-          value={apiURL}
-          onChange={updateApiURL}
-          id="api_url"
-        />
-      </div>
+            >
+              <option selected>Choose a model</option>
+              <option value="gpt-4">GPT 4</option>
+              <option value="gpt-4-32k">GPT 4 32k</option>
+              <option value="gpt-3.5-turbo-1106">GPT 3.5 turbo 1106</option>
+              <option value="gpt-3.5-turbo">GPT 3.5 turbo</option>
+            </select>
+          </div>
 
+          <div className="flex flex-col gap-y-2">
+            <label htmlFor="api_url" className="text-xl font-medium">
+              API URL
+            </label>
+
+            <input
+              className="bg-gray-50 border w-64 border-gray-300 text-gray-900 text-sm rounded-lg
+          focus:ring-blue-500 focus:border-blue-500 block"
+              value={apiURL}
+              onChange={updateApiURL}
+              id="api_url"
+            />
+          </div>
+        </>
+      )}
       <div className="flex flex-col gap-y-2">
         <label htmlFor="api_url" className="text-xl font-medium">
           Filter Rule

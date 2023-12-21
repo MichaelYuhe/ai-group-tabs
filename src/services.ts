@@ -1,41 +1,11 @@
-import Mustache from "mustache";
 import { getStorage, matchesRule } from "./utils";
-import { FilterRuleItem } from "./types";
-import { DEFAULT_PROMPT } from "./const";
+import { FilterRuleItem, TabInfo } from "./types";
+import { fetchType } from "./service-provider";
 
 interface TabGroup {
   type: string;
   tabIds: (number | undefined)[];
 }
-
-interface TabInfo {
-  id: number | undefined;
-  title: string | undefined;
-  url: string | undefined;
-}
-
-const renderPrompt = async (
-  tab: TabInfo,
-  types: string[]
-): Promise<
-  [{ role: string; content: string }, { role: string; content: string }]
-> => {
-  const prompt: string = (await getStorage("prompt")) || DEFAULT_PROMPT;
-  return [
-    {
-      role: "system",
-      content: "You are a brwoser tab group classificator",
-    },
-    {
-      role: "user",
-      content: Mustache.render(prompt, {
-        tabURL: tab.url,
-        tabTitle: tab.title,
-        types: types.join(", "),
-      }),
-    },
-  ];
-};
 
 const filterTabInfo = (tabInfo: TabInfo, filterRules: FilterRuleItem[]) => {
   if (!filterRules || !filterRules?.length) return true;
@@ -48,7 +18,7 @@ const filterTabInfo = (tabInfo: TabInfo, filterRules: FilterRuleItem[]) => {
 export async function batchGroupTabs(
   tabs: chrome.tabs.Tab[],
   types: string[],
-  openAIKey: string
+  apiKey: string
 ) {
   const filterRules = (await getStorage<FilterRuleItem[]>("filterRules")) || [];
   const tabInfoList: TabInfo[] = tabs
@@ -68,31 +38,11 @@ export async function batchGroupTabs(
     };
   });
 
-  const model = (await getStorage("model")) || "gpt-3.5-turbo";
-  const apiURL =
-    (await getStorage("apiURL")) ||
-    "https://api.openai.com/v1/chat/completions";
-
   try {
     await Promise.all(
       tabInfoList.map(async (tabInfo) => {
         if (!tabInfo.url) return;
-        const response = await fetch(apiURL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${openAIKey}`,
-            "Api-Key": openAIKey,
-          },
-          body: JSON.stringify({
-            messages: await renderPrompt(tabInfo, types),
-            model,
-          }),
-        });
-
-        const data = await response.json();
-        const type = data.choices[0].message.content;
-
+        const type = await fetchType(apiKey, tabInfo, types);
         const index = types.indexOf(type);
         if (index === -1) return;
         result[index].tabIds.push(tabInfo.id);
@@ -108,35 +58,16 @@ export async function batchGroupTabs(
 export async function handleOneTab(
   tab: chrome.tabs.Tab,
   types: string[],
-  openAIKey: string
+  apiKey: string
 ) {
   try {
     const tabInfo: TabInfo = { id: tab.id, title: tab.title, url: tab.url };
-    const model = (await getStorage("model")) || "gpt-3.5-turbo";
-    const apiURL =
-      (await getStorage("apiURL")) ||
-      "https://api.openai.com/v1/chat/completions";
-
     const filterRules =
       (await getStorage<FilterRuleItem[]>("filterRules")) || [];
     const shouldFilter = !filterTabInfo(tabInfo, filterRules);
     if (shouldFilter) return;
 
-    const response = await fetch(apiURL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${openAIKey}`,
-        "Api-Key": openAIKey,
-      },
-      body: JSON.stringify({
-        messages: await renderPrompt(tabInfo, types),
-        model,
-      }),
-    });
-
-    const data = await response.json();
-    const type = data.choices[0].message.content;
+    const type = await fetchType(apiKey, tabInfo, types);
 
     return type;
   } catch (error) {
