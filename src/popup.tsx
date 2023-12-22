@@ -2,14 +2,15 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { batchGroupTabs } from "./services";
-import { getStorage, setStorage } from "./utils";
-import "./popup.css";
+import { getStorage, setStorage, validateApiKey } from "./utils";
 import Input from "./components/Input";
 import Switch from "./components/Switch";
 import { ColorPicker } from "./components/ColorPicker";
 import { Color, DEFAULT_GROUP, TabColorConfig } from "./const";
 import { toast } from "./components/toast";
 import { ServiceProvider } from "./types";
+
+import "./popup.css";
 
 const getApiKeyHrefMap = {
   Gemini: "https://ai.google.dev/",
@@ -28,9 +29,6 @@ const Popup = () => {
   );
   const [newType, setNewType] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isValidated, setIsValidated] = useState<boolean | undefined>(
-    undefined
-  );
   const [isValidating, setIsValidating] = useState<boolean>(false);
   const [color, setColor] = useState<Color>(Color.grey);
   const [colors, setColors] = useState<Color[]>([]);
@@ -115,83 +113,8 @@ const Popup = () => {
       return false;
     }
     setIsValidating(true);
-    try {
-      if (serviceProvider === "Gemini") {
-        const response = await fetch(
-          "https://generativelanguage.googleapis.com/v1beta3/models/text-bison-001:generateText?key=" +
-            openAIKey,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              prompt: { text: "This is a test" },
-            }),
-          }
-        );
-        if (response.status === 200) {
-          setIsValidated(true);
-        } else {
-          setIsValidated(false);
-          const txt = await response.text();
-          toast({
-            type: "error",
-            message: "Invalid Genmini Key: " + response.status + " " + txt,
-          });
-        }
-      } else {
-        const response = await fetch(
-          "https://api.openai.com/v1/engines/davinci/completions",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${openAIKey}`,
-            },
-            body: JSON.stringify({
-              prompt: "This is a test",
-              max_tokens: 5,
-              temperature: 0.5,
-              top_p: 1,
-              frequency_penalty: 0,
-              presence_penalty: 0,
-              stop: ["\n"],
-            }),
-          }
-        );
-        if (response.status === 200) {
-          setIsValidated(true);
-        } else {
-          setIsValidated(false);
-          const txt = await response.text();
-          toast({
-            type: "error",
-            message: "Invalid OpenAI Key: " + response.status + " " + txt,
-          });
-        }
-      }
-    } catch (error) {
-      setIsValidated(false);
-      console.error(error);
-      if (error instanceof Error) {
-        toast({
-          type: "error",
-          message: "Invalid OpenAI Key: " + error.message,
-        });
-      } else {
-        toast({
-          type: "error",
-          message: "Invalid OpenAI Key",
-        });
-      }
-    } finally {
-      setIsValidating(false);
-
-      setTimeout(() => {
-        setIsValidated(undefined);
-      }, 3000);
-    }
+    await validateApiKey(openAIKey, serviceProvider);
+    setIsValidating(false);
   };
 
   return (
@@ -234,13 +157,7 @@ const Popup = () => {
             focus-visible:outline-offset-2 disabled:bg-primary/sm"
           >
             {isValidating && <LoadingSpinner />}
-            {isValidated === undefined ? (
-              "Validate"
-            ) : isValidated ? (
-              <img src="/check.svg" alt="check" />
-            ) : (
-              <img src="/error.svg" alt="error" />
-            )}
+            Validate
           </button>
         </div>
       </div>
