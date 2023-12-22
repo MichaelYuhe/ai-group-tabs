@@ -39,21 +39,16 @@ export async function batchGroupTabs(
     };
   });
 
-  try {
-    await Promise.all(
-      tabInfoList.map(async (tabInfo) => {
-        if (!tabInfo.url) return;
-        const type = await fetchType(apiKey, tabInfo, types);
-        const index = types.indexOf(type);
-        if (index === -1) return;
-        result[index].tabIds.push(tabInfo.id);
-      })
-    );
-    return result;
-  } catch (error) {
-    console.error(error);
-    return result;
-  }
+  await Promise.all(
+    tabInfoList.map(async (tabInfo) => {
+      if (!tabInfo.url) return;
+      const type = await fetchType(apiKey, tabInfo, types);
+      const index = types.indexOf(type);
+      if (index === -1) return;
+      result[index].tabIds.push(tabInfo.id);
+    })
+  );
+  return result;
 }
 
 export async function handleOneTab(
@@ -61,19 +56,13 @@ export async function handleOneTab(
   types: string[],
   apiKey: string
 ) {
-  try {
-    const tabInfo: TabInfo = { id: tab.id, title: tab.title, url: tab.url };
-    const filterRules =
-      (await getStorage<FilterRuleItem[]>("filterRules")) || [];
-    const shouldFilter = !filterTabInfo(tabInfo, filterRules);
-    if (shouldFilter) return;
+  const tabInfo: TabInfo = { id: tab.id, title: tab.title, url: tab.url };
+  const filterRules = (await getStorage<FilterRuleItem[]>("filterRules")) || [];
+  const shouldFilter = !filterTabInfo(tabInfo, filterRules);
+  if (shouldFilter) return;
 
-    const type = await fetchType(apiKey, tabInfo, types);
-
-    return type;
-  } catch (error) {
-    console.error(error);
-  }
+  const type = await fetchType(apiKey, tabInfo, types);
+  return type;
 }
 
 /**
