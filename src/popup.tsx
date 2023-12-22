@@ -21,7 +21,7 @@ const Popup = () => {
   const [serviceProvider, setServiceProvider] = useState<ServiceProvider>(
     "GPT"
   );
-  const [openAIKey, setOpenAIKey] = useState<string | undefined>("");
+  const [apiKey, setApiKey] = useState<string | undefined>("");
   const [types, setTypes] = useState<string[]>([]);
   const [isOn, setIsOn] = useState<boolean | undefined>(true);
   const [isAutoPosition, setIsAutoPosition] = useState<boolean | undefined>(
@@ -34,7 +34,7 @@ const Popup = () => {
   const [colors, setColors] = useState<Color[]>([]);
   const [colorsEnabled, setColorsEnabled] = useState<boolean>(false);
   useEffect(() => {
-    getStorage<string>("openai_key").then(setOpenAIKey);
+    getStorage<string>("openai_key").then(setApiKey);
     getStorage<boolean>("isOn").then(setIsOn);
     getStorage<boolean>("isAutoPosition").then(setIsAutoPosition);
     getStorage<string[]>("types").then((types) => {
@@ -59,21 +59,21 @@ const Popup = () => {
   }, []);
 
   const updateOpenAIKey = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setOpenAIKey(e.target.value);
+    setApiKey(e.target.value);
   }, []);
 
   const updateKeyInStorage = useCallback(() => {
-    setStorage("openai_key", openAIKey);
-  }, [openAIKey]);
+    setStorage("openai_key", apiKey);
+  }, [apiKey]);
 
   const getAllTabsInfo = async () => {
-    if (!openAIKey || !types || !types.length) {
+    if (!apiKey || !types || !types.length) {
       return;
     }
     try {
       setIsLoading(true);
       const tabs = await chrome.tabs.query({ currentWindow: true });
-      const result = await batchGroupTabs(tabs, types, openAIKey);
+      const result = await batchGroupTabs(tabs, types, apiKey);
       chrome.runtime.sendMessage({ result });
     } catch (error) {
       // TODO show error message
@@ -108,12 +108,12 @@ const Popup = () => {
   };
 
   const handleValidateOpenAIKey = async () => {
-    if (!openAIKey || openAIKey.length <= 0) {
+    if (!apiKey || apiKey.length <= 0) {
       toast.warn("Please enter an API key");
       return false;
     }
     setIsValidating(true);
-    await validateApiKey(openAIKey, serviceProvider);
+    await validateApiKey(apiKey, serviceProvider);
     setIsValidating(false);
   };
 
@@ -145,13 +145,13 @@ const Popup = () => {
             type="password"
             onChange={updateOpenAIKey}
             onBlur={updateKeyInStorage}
-            value={openAIKey}
+            value={apiKey}
             placeholder="Your OpenAI Key"
           />
 
           <button
             onClick={handleValidateOpenAIKey}
-            disabled={!openAIKey}
+            disabled={!apiKey}
             className="rounded-md flex items-center w-fit bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
             text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2
             focus-visible:outline-offset-2 disabled:bg-primary/sm"
@@ -162,7 +162,7 @@ const Popup = () => {
         </div>
       </div>
 
-      {!openAIKey?.length && (
+      {!apiKey?.length && (
         <div className="text-sm text-gray-500 mb-2">
           You can get your key from{" "}
           <a
@@ -265,7 +265,7 @@ const Popup = () => {
 
       <div className="flex items-center gap-x-4">
         <button
-          disabled={!openAIKey || !types || !types.length}
+          disabled={!apiKey || !types || !types.length}
           className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
         text-white shadow-sm hover:bg-primary focus-visible:outline cursor-pointer
         focus-visible:outline-2 focus-visible:outline-offset-2"
