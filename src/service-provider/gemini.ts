@@ -61,6 +61,6 @@ export const fetchGemini = async (
 
   const data = await response.json();
 
-  const type = data.candidates[0].content.parts[0].text;
+  const type: string = data.candidates[0].content.parts[0].text;
   return type;
 };
