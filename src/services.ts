@@ -1,6 +1,7 @@
 import { getStorage, matchesRule } from "./utils";
-import { FilterRuleItem, TabInfo } from "./types";
+import { FilterRuleItem, ServiceProvider, TabInfo } from "./types";
 import { fetchType } from "./service-provider";
+import { toast } from "./components/toast";
 
 interface TabGroup {
   type: string;
@@ -74,3 +75,72 @@ export async function handleOneTab(
     console.error(error);
   }
 }
+
+/**
+ * This function will show a toast!
+ */
+export const validateApiKey = async (
+  apiKey: string,
+  serviceProvider: ServiceProvider
+) => {
+  try {
+    if (serviceProvider === "Gemini") {
+      const response = await fetch(
+        "https://generativelanguage.googleapis.com/v1beta3/models/text-bison-001:generateText?key=" +
+          apiKey,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            prompt: { text: "This is a test" },
+          }),
+        }
+      );
+      if (response.status === 200) {
+        return true;
+      } else {
+        const txt = await response.text();
+        toast.error("Invalid Gemini Key: " + response.status + " " + txt);
+        return false;
+      }
+    } else {
+      const response = await fetch(
+        "https://api.openai.com/v1/engines/davinci/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            prompt: "This is a test",
+            max_tokens: 5,
+            temperature: 0.5,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            stop: ["\n"],
+          }),
+        }
+      );
+      if (response.status === 200) {
+        toast.success("Valid OpenAI Key");
+        return true;
+      } else {
+        const txt = await response.text();
+        toast.error("Invalid OpenAI Key: " + response.status + " " + txt);
+        return false;
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      toast.error("Invalid OpenAI Key: " + error.message);
+    } else {
+      toast.error("Invalid OpenAI Key");
+    }
+    return false;
+  }
+};
