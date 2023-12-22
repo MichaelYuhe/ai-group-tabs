@@ -217,11 +217,7 @@ async function handleNewTab(tab: chrome.tabs.Tab) {
 
   tabMap[tab.id] = tab;
 
-  try {
-    await processTabAndGroup(tab, types);
-  } catch (error) {
-    console.error("Error in handleNewTab:", error);
-  }
+  await processTabAndGroup(tab, types);
 }
 
 async function handleTabUpdate(
@@ -249,11 +245,7 @@ async function handleTabUpdate(
 
   tabMap[tab.id] = tab;
 
-  try {
-    await processTabAndGroup(tab, types);
-  } catch (error) {
-    console.error("Error in handleTabUpdate:", error);
-  }
+  await processTabAndGroup(tab, types);
 }
 
 chrome.tabs.onCreated.addListener(handleNewTab);

@@ -24,7 +24,7 @@ const ColorCircle = ({
           "--tw-ring-color": colorValue,
         } as React.CSSProperties
       }
-      checked={selected}
+      defaultChecked={selected}
       onClick={onClick}
     ></input>
   );

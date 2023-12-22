@@ -6,7 +6,7 @@ import { fetchGpt } from "./gpt";
 const fetchMap = {
   GPT: fetchGpt,
   Gemini: fetchGemini,
-};
+} as const;
 
 export const fetchType = async (
   apiKey: string,

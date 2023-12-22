@@ -51,6 +51,6 @@ export const fetchGpt = async (
   });
 
   const data = await response.json();
-  const type = data.choices[0].message.content;
+  const type: string = data.choices[0].message.content;
   return type;
 };
