@@ -103,20 +103,17 @@ const Popup = () => {
     try {
       const tabs = await chrome.tabs.query({ currentWindow: true });
       chrome.tabs.ungroup(tabs.map((tab) => tab.id!));
-      toast({
-        type: "success",
-        message: "Ungrouped all tabs",
-      });
+      toast.success("Ungrouped all tabs");
     } catch (error) {
       console.error(error);
     }
   };
 
   const handleValidateOpenAIKey = async () => {
-    if (!openAIKey) {
-      return;
+    if (!openAIKey || openAIKey.length <= 0) {
+      toast.warn("Please enter an API key");
+      return false;
     }
-
     setIsValidating(true);
     try {
       if (serviceProvider === "Gemini") {

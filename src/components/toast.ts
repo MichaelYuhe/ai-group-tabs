@@ -121,3 +121,8 @@ export function toast(messageOrOptions: string | Partial<ToastOptions>) {
   }, toastOptions.duration);
   return element;
 }
+
+toast.success = (message: string) => toast({ type: "success", message });
+toast.info = (message: string) => toast({ type: "info", message });
+toast.warn = (message: string) => toast({ type: "warn", message });
+toast.error = (message: string) => toast({ type: "error", message });
