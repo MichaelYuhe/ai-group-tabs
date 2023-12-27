@@ -133,3 +133,14 @@ export const getServiceProvider = async () => {
     (await getStorage<ServiceProvider>("serviceProvider")) || "GPT";
   return serviceProvider;
 };
+
+export const removeQueryParameters = (
+  urlString: string | undefined
+): string => {
+  if (typeof urlString !== "string") {
+    return "about:blank";
+  }
+  const url = new URL(urlString);
+  url.search = "";
+  return url.toString();
+};
