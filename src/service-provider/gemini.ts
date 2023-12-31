@@ -1,6 +1,6 @@
 import { TabInfo } from "../types";
 import Mustache from "mustache";
-import { getStorage } from "../utils";
+import { getStorage, removeQueryParameters } from "../utils";
 import { DEFAULT_PROMPT } from "../const";
 
 const renderPromptForGemini = async (
@@ -30,7 +30,7 @@ const renderPromptForGemini = async (
       parts: [
         {
           text: Mustache.render(prompt, {
-            tabURL: tab.url,
+            tabURL: removeQueryParameters(tab.url),
             tabTitle: tab.title,
             types: types.join(", "),
           }),

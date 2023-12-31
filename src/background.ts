@@ -210,7 +210,9 @@ async function handleNewTab(tab: chrome.tabs.Tab) {
     !tab.id ||
     !tab.url ||
     window.type != "normal" ||
-    !types.length
+    !types.length ||
+    tab.url?.startsWith("chrome") ||
+    tab.url.startsWith("about")
   ) {
     return;
   }
@@ -228,7 +230,14 @@ async function handleTabUpdate(
   const enable = await getStorage<boolean>("isOn");
   const window = await chrome.windows.get(tab.windowId);
 
-  if (!enable || !tab.id || !tab.url) return;
+  if (
+    !enable ||
+    !tab.id ||
+    !tab.url ||
+    tab.url.startsWith("chrome") ||
+    tab.url.startsWith("about")
+  )
+    return;
 
   const oldTab = tabMap[tab.id];
   if (

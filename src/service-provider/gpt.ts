@@ -1,6 +1,6 @@
 import { TabInfo } from "../types";
 import Mustache from "mustache";
-import { getStorage } from "../utils";
+import { getStorage, removeQueryParameters } from "../utils";
 import { DEFAULT_PROMPT } from "../const";
 
 const renderPromptForOpenAI = async (
@@ -18,7 +18,7 @@ const renderPromptForOpenAI = async (
     {
       role: "user",
       content: Mustache.render(prompt, {
-        tabURL: tab.url,
+        tabURL: removeQueryParameters(tab.url),
         tabTitle: tab.title,
         types: types.join(", "),
       }),
