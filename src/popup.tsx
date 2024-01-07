@@ -11,6 +11,7 @@ import { toast } from "./components/toast";
 import { ServiceProvider } from "./types";
 
 import "./popup.css";
+import { getDomainMatchedType } from "./service-provider/openai-embeddings";
 
 const getApiKeyHrefMap = {
   Gemini: "https://ai.google.dev/",
@@ -233,6 +234,22 @@ const Popup = () => {
     setIsValidating(false);
   };
 
+  const smartGroup = async () => {
+    console.log("smartGroup");
+
+    if (!apiKey) {
+      return;
+    }
+    const tabs = await chrome.tabs.query({ currentWindow: true });
+    // TODO filter out tabs that match filterRules
+    for (const tab of tabs) {
+      if (!tab.url) continue;
+      const matchData = await getDomainMatchedType(apiKey, tab.url);
+      // TODO group tab
+      console.log(tab.url, matchData?.type, matchData);
+    }
+  };
+
   return (
     <div className="p-6 pb-9 min-w-[24rem] ">
       <div className="flex items-center mb-6 justify-between">
@@ -299,7 +316,7 @@ const Popup = () => {
           disabled={!apiKey || !types || !types.length}
           className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
         text-white shadow-sm hover:bg-primary focus-visible:outline cursor-pointer
-        focus-visible:outline-2 focus-visible:outline-offset-2"
+        focus-visible:outline-2 focus-visible:outline-offset-2 whitespace-nowrap"
           onClick={getAllTabsInfo}
         >
           {isLoading && <LoadingSpinner />}
@@ -309,10 +326,18 @@ const Popup = () => {
         <button
           className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
         text-white shadow-sm hover:bg-primary focus-visible:outline cursor-pointer
-        focus-visible:outline-2 focus-visible:outline-offset-2"
+        focus-visible:outline-2 focus-visible:outline-offset-2 whitespace-nowrap"
           onClick={ungroup}
         >
           Ungroup All
+        </button>
+        <button
+          className="inline-flex items-center rounded-md bg-primary/lg px-2.5 py-1.5 text-sm font-semibold
+        text-white shadow-sm hover:bg-primary focus-visible:outline cursor-pointer
+        focus-visible:outline-2 focus-visible:outline-offset-2 whitespace-nowrap"
+          onClick={smartGroup}
+        >
+          Smart Group
         </button>
       </div>
 

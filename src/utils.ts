@@ -144,3 +144,25 @@ export const removeQueryParameters = (
   url.search = "";
   return url.toString();
 };
+
+/**
+ * Cosine similarity
+ * See https://en.wikipedia.org/wiki/Cosine_similarity
+ *
+ * If use the `text-embedding-ada-002` model from openAI API, the embedding length is `1536`.
+ */
+export const cosineSimilarity = (
+  embedding1: number[],
+  embedding2: number[]
+) => {
+  if (embedding1.length !== embedding2.length) {
+    console.error("embedding1", embedding1, "embedding2", embedding2);
+    throw new Error("embedding1 and embedding2 should have same length");
+  }
+  const dotProduct = embedding1.reduce((acc, cur, index) => {
+    return acc + cur * embedding2[index];
+  }, 0);
+  const norm1 = Math.sqrt(embedding1.reduce((acc, cur) => acc + cur * cur, 0));
+  const norm2 = Math.sqrt(embedding2.reduce((acc, cur) => acc + cur * cur, 0));
+  return dotProduct / (norm1 * norm2);
+};
