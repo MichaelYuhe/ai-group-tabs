@@ -65,6 +65,7 @@ export async function handleOneTab(
   return type;
 }
 
+// TODO merge this to service-provider
 /**
  * This function will show a toast!
  */
@@ -87,7 +88,7 @@ export const validateApiKey = async (
           }),
         }
       );
-      if (response.status === 200) {
+      if (response.ok) {
         return true;
       } else {
         const txt = await response.text();
@@ -95,26 +96,35 @@ export const validateApiKey = async (
         return false;
       }
     } else {
-      const response = await fetch(
-        "https://api.openai.com/v1/engines/davinci/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify({
-            prompt: "This is a test",
-            max_tokens: 5,
-            temperature: 0.5,
-            top_p: 1,
-            frequency_penalty: 0,
-            presence_penalty: 0,
-            stop: ["\n"],
-          }),
-        }
-      );
-      if (response.status === 200) {
+      const apiURL =
+        (await getStorage("apiURL")) ||
+        "https://api.openai.com/v1/chat/completions";
+      const model = (await getStorage("model")) || "gpt-3.5-turbo";
+
+      // https://platform.openai.com/docs/api-reference/chat/create
+      const response = await fetch(apiURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            {
+              role: "system",
+              content: "ping",
+            },
+          ],
+          max_tokens: 1,
+          temperature: 0.5,
+          top_p: 1,
+          frequency_penalty: 0,
+          presence_penalty: 0,
+          stop: ["\n"],
+        }),
+      });
+      if (response.ok) {
         toast.success("Valid OpenAI Key");
         return true;
       } else {

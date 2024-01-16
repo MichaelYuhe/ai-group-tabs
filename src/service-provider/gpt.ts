@@ -31,6 +31,7 @@ export const fetchGpt = async (
   tabInfo: TabInfo,
   types: string[]
 ) => {
+  // See https://platform.openai.com/docs/api-reference/chat/create
   const apiURL =
     (await getStorage("apiURL")) ||
     "https://api.openai.com/v1/chat/completions";
