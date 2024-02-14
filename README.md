@@ -62,29 +62,6 @@ pnpm build
 
 <a href="https://www.buymeacoffee.com/MichaelYuhe" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
-## Star History
-
-<div align="left">
-<picture>
-  <source
-    media="(prefers-color-scheme: dark)"
-    srcset="
-      https://api.star-history.com/svg?repos=MichaelYuhe/ai-group-tabs&type=Date&theme=dark
-    "
-  />
-  <source
-    media="(prefers-color-scheme: light)"
-    srcset="
-      https://api.star-history.com/svg?repos=MichaelYuhe/ai-group-tabs&type=Date
-    "
-  />
-  <img
-    alt="Star History Chart"
-    src="https://api.star-history.com/svg?repos=MichaelYuhe/ai-group-tabs&type=Date"
-  />
-</picture>
-</div>
-
 ## Contributors
 
 <p align="left">
