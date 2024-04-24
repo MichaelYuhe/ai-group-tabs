@@ -1,8 +1,6 @@
 # AI Group Tabs
 
-A Chrome extension helps organize and group your Chrome tabs with AI
-
-> [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/+99v98-XOQY0zZGNl)
+![Frame 7](https://github.com/MichaelYuhe/ai-group-tabs/assets/63531512/fef62a35-8193-4ef1-8082-cfc771d0b4e6)
 
 Demo Video:
 
